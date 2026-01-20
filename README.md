@@ -1,14 +1,17 @@
 # W26-COSC-210
 
 ## Team Name:
-* Team member 1: [only name]
-* Team member 2: [only name]
+* Team member 1: Asher Nathan
+* Team member 2: Quinn Handy
 
 ## Project proposal:
-
+Weekly planner
 
 
 ## USER STORIES FOR MEMBER 1
+I want to be able to add an event to my weekly plan
+I want to be able to set a time/date for that event
+I want to be able to delete an event
 
 
 ## USER STORIES FOR MEMBER 2
