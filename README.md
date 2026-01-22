@@ -12,7 +12,7 @@ Weekly planner. This application will allow use to keep track of what we need to
 As a user, I want to be able to add an event to my weekly plan so that I can keep track of my week. \
 As a user, I want to be able to set a time/date for that event to help avoid overlaps. \
 As a user, I want to be able to delete an event, so that I can change my plans. \
-As a user, I want to be able to clear my entire week, so that when a new week starts, I can . 
+As a user, I want to be able to clear my entire week, so that when a new week starts, I can . \
 As a user, I want to be able to label a task "permanent," so that it will perservere through a week clear (such a class that I have every week).
 
 ## USER STORIES FOR QUINN
