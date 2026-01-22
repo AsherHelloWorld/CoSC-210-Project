@@ -15,6 +15,6 @@ I want to be able to delete an event. \
 I want to be able to clear my entire week. 
 
 ## USER STORIES FOR MEMBER 2
-I want to be able to change the time/date of events. 
-I want to add notes to events. 
+I want to be able to change the time/date of events. \
+I want to add notes to events. \
 I want to add a description to events. 
