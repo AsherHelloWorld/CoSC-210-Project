@@ -5,7 +5,7 @@
 * Team member 2: Quinn Handy
 
 ## Project proposal:
-Weekly planner. This application will allow use to keep track of what we need to do that week, by showing us all 7 days, and the events on those given days. It will consist of "Event Objects" or something equivlent to this, and be able to have a arbitrary nuber of these objects inside. We will use the planner ourselves, and offer it to other people if they are interested.
+Weekly planner. This application will allow use to keep track of what we need to do that week, by showing us all 7 days, and the events on those given days. It will consist of "Event Objects" or something equivalent to this, and be able to have an arbitrary number of these objects inside. We will use the planner ourselves, and offer it to other people if they are interested.
 
 
 ## USER STORIES FOR MEMBER 1
