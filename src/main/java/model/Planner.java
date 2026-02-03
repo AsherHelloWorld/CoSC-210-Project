@@ -27,7 +27,15 @@ public class Planner {
     }
 
     public ArrayList<Task> getTasks() {
+        if (taskList.isEmpty()) {
+            System.out.println("No tasks available.");
+        } else {
+            for (Task task : taskList) {
+                System.out.println("Task number: " + (taskList.indexOf(task) + 1));
+                task.info();
+                System.out.println();
+            }
+        }    
         return taskList;
     }
-
 }

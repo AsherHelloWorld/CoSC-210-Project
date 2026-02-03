@@ -49,6 +49,7 @@ public class UI {
     //Prompts user for task details and adds the task to the planner
     private void addTask() {
         System.out.println();
+        System.out.println("Adding a new task:");
         System.out.print("Enter task name: ");
         String name = s.nextLine();
         System.out.print("Enter task date: ");
@@ -68,14 +69,9 @@ public class UI {
 
     //Prints out a list of all tasks in the planner
     private void viewTasks() {
-        ArrayList<Task> tasks = p.getTasks();
-        if (tasks.isEmpty()) {
-            System.out.println("No tasks available.");
-        } else {
-            for (Task task : tasks) {
-                task.info();
-            }
-        }
+        System.out.println();
+        System.out.println("Tasks in the planner:");
+        p.getTasks();
     }
 
 }
