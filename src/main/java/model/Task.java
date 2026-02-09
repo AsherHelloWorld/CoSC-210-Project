@@ -1,10 +1,11 @@
 package model;
 import java.io.*;
 
-public class Task implements Serializable{
 
-    private static final long serialVersionUID = 1L;
+// Represents a task with a name, date, time, description, and location.
+public class Task implements Displayable, Searchable, Serializable {
 
+        private static final long serialVersionUID = 1L;
 
     private String name;
     private String date;
@@ -90,11 +91,21 @@ public class Task implements Serializable{
         this.location = location;
     }
 
-    public void info() {
+    public void display() {
         System.out.println("Task Name: " + this.name);
         System.out.println("Date: " + this.date);
         System.out.println("Time: " + this.time);
         System.out.println("Description: " + this.description);
         System.out.println("Location: " + this.location);
+    }
+
+    @Override
+    // EFFECTS: searchs for a keyword in the name of this task, and then displays it if found.
+    public void search(String keyword) {
+        if (this.name.toLowerCase().contains(keyword.toLowerCase())) {
+            this.display();
+        } else {
+            System.out.println("No tasks found with the keyword: " + keyword);
+        }
     }
 }

@@ -2,10 +2,12 @@ package model;
 import java.util.*;
 import java.io.*;
 
-public class Planner implements Serializable, Searchable{
+// Represents a weekly planner that contains a list of tasks.
+public class Planner implements Serializable, Searchable {
 
     private static final long serialVersionUID = 1L;
     private static final String FILE_PATH = "data/planner.ser";
+
 
     ArrayList<Task> taskList = new ArrayList<Task>();
 
