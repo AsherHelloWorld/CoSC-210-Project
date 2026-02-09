@@ -1,7 +1,11 @@
 package model;
+import java.io.*;
 
 // Represents a task with a name, date, time, description, and location.
-public class Task implements Displayable, Searchable {
+public class Task implements Displayable, Searchable, Serializable {
+  
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private String date;
     private int time;
@@ -86,9 +90,7 @@ public class Task implements Displayable, Searchable {
         this.location = location;
     }
 
-    @Override
-    // EFFECTS: displays the information of this task.
-    public void display() {
+    public void info() {
         System.out.println("Task Name: " + this.name);
         System.out.println("Date: " + this.date);
         System.out.println("Time: " + this.time);
