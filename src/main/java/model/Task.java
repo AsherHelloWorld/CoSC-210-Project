@@ -1,6 +1,6 @@
 package model;
 
-public class Task {
+public class Task implements Displayable {
     private String name;
     private String date;
     private int time;
@@ -85,7 +85,9 @@ public class Task {
         this.location = location;
     }
 
-    public void info() {
+    @Override
+    // EFFECTS: displays the information of this task.
+    public void display() {
         System.out.println("Task Name: " + this.name);
         System.out.println("Date: " + this.date);
         System.out.println("Time: " + this.time);
