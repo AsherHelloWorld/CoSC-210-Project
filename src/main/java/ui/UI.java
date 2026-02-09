@@ -30,6 +30,12 @@ public class UI {
                     viewTasks();
                     break;
                 case 3:
+                   p.saveToFile();
+                    break;
+                case 4:
+                    p = Planner.loadFromFile();
+                    break;
+                case 5:
                     running = false;
                     break;
                 default:
@@ -42,7 +48,9 @@ public class UI {
     private void printMenu() {
         System.out.println("1. Add Task");
         System.out.println("2. View Tasks");
-        System.out.println("3. Exit");
+        System.out.println("3. Save Planner");
+        System.out.println("4. Load Planner");
+        System.out.println("5. Exit");
         System.out.print("Enter your choice: ");
     }
 

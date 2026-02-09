@@ -1,7 +1,12 @@
 package model;
 import java.util.*;
+import java.io.*;
 
-public class Planner implements Searchable{
+public class Planner implements Serializable, Searchable{
+
+    private static final long serialVersionUID = 1L;
+    private static final String FILE_PATH = "data/planner.ser";
+
     ArrayList<Task> taskList = new ArrayList<Task>();
 
     // MODIFIES: this
@@ -19,7 +24,6 @@ public class Planner implements Searchable{
         String description = s.nextLine();
         System.out.println("Enter task location:");
         String location = s.nextLine();
-        s.close();
              
         taskList.add(new Task(name, date, time, description, location));
     }
@@ -38,20 +42,48 @@ public class Planner implements Searchable{
         } else {
             for (Task task : taskList) {
                 System.out.println("Task number: " + (taskList.indexOf(task) + 1));
-                task.display();
+                ///task.display();
                 System.out.println();
             }
         }    
         return taskList;
     }
 
+    public void saveToFile(){
+        try{
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_PATH));
+        out.writeObject(this);
+        out.close();
+        } catch (IOException e){
+            //System.out.println("Error saving planner to file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static Planner loadFromFile(){
+        try{
+            File file = new File(FILE_PATH);
+            file.getParentFile().mkdirs();
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_PATH));
+        Planner planner = (Planner) in.readObject();
+        in.close();
+        return planner;
+        } catch (IOException e){
+            System.out.println("Error loading planner from file: " + e.getMessage());
+            return new Planner();
+        } catch (ClassNotFoundException e){
+            System.out.println("Class not found: " + e.getMessage());
+            return new Planner();
+        }
+    }
     @Override
     // EFFECTS: searchs for a task with a given keyword, and then displays it. 
     public void search(String keyword) {
         boolean found = false;
         for (Task task : taskList) {
             if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                task.display();
+                //task.display();
                 System.out.println();
                 found = true;
             }
@@ -61,3 +93,5 @@ public class Planner implements Searchable{
         }
     }
 }
+
+
