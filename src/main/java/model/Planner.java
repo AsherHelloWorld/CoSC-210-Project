@@ -1,6 +1,7 @@
 package model;
 import java.util.*;
 
+// Represents a weekly planner that contains a list of tasks.
 public class Planner implements Searchable {
     ArrayList<Task> taskList = new ArrayList<Task>();
 
