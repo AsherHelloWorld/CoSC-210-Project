@@ -71,7 +71,7 @@ public class TaskTest {
     }
 
     @Test
-    public void testInfo() {
-        tester.info();   // just check it runs
+    public void testDisplay() {
+        tester.display();   // just check it runs
     }
 }
