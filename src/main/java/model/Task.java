@@ -1,6 +1,7 @@
 package model;
 
-public class Task implements Displayable {
+// Represents a task with a name, date, time, description, and location.
+public class Task implements Displayable, Searchable {
     private String name;
     private String date;
     private int time;
@@ -93,5 +94,15 @@ public class Task implements Displayable {
         System.out.println("Time: " + this.time);
         System.out.println("Description: " + this.description);
         System.out.println("Location: " + this.location);
+    }
+
+    @Override
+    // EFFECTS: searchs for a keyword in the name of this task, and then displays it if found.
+    public void search(String keyword) {
+        if (this.name.toLowerCase().contains(keyword.toLowerCase())) {
+            this.display();
+        } else {
+            System.out.println("No tasks found with the keyword: " + keyword);
+        }
     }
 }

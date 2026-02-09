@@ -1,7 +1,7 @@
 package model;
 import java.util.*;
 
-public class Planner implements Searchable{
+public class Planner implements Searchable {
     ArrayList<Task> taskList = new ArrayList<Task>();
 
     // MODIFIES: this
