@@ -12,7 +12,7 @@ public class TaskTest {
 
     @BeforeEach
     void setup() {
-        tester = new Task("Tasker", "Monday", 2, "Test task", "YMH");
+        tester = new Task("Tasker", "Monday", 2, "Test task", "YMH", false);
     }
 
     @Test
@@ -73,5 +73,12 @@ public class TaskTest {
     @Test
     public void testDisplay() {
         tester.display();   // just check it runs
+    }
+
+    @Test
+    public void testPermanent() {
+        assertFalse(tester.isPermanent());
+        tester.setPermanent(true);
+        assertTrue(tester.isPermanent());
     }
 }

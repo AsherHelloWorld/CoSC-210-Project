@@ -12,15 +12,15 @@ public class Task implements Displayable, Searchable, Serializable {
     private int time;
     private String description;
     private String location;
+    private boolean permanent;
 
-    public Task(String name, String date, int time, String description, String location){
-
+    public Task(String name, String date, int time, String description, String location, boolean permanent) {
         this.name = name;
         this.date = date;
         this.time = time;
         this.description = description;
         this.location = location;
-        
+        this.permanent = permanent;
     }
 
     public Task() {
@@ -29,6 +29,7 @@ public class Task implements Displayable, Searchable, Serializable {
         this.time = 1;
         this.description = "No Description";
         this.location = "No Location";
+        this.permanent = false;
     }
 
     // EFFECTS: returns the name of this task.
@@ -91,12 +92,27 @@ public class Task implements Displayable, Searchable, Serializable {
         this.location = location;
     }
 
+    // EFFECTS: returns whether this task is permanent.
+    public boolean isPermanent() {
+        return permanent;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: sets whether this task is permanent.
+    // REQUIRES: permanent is a boolean value
+    public void setPermanent(boolean permanent) {
+        this.permanent = permanent;
+    }
+
+    @Override
+    // EFFECTS: displays the details of this task.
     public void display() {
         System.out.println("Task Name: " + this.name);
         System.out.println("Date: " + this.date);
         System.out.println("Time: " + this.time);
         System.out.println("Description: " + this.description);
         System.out.println("Location: " + this.location);
+        System.out.println("Permanent: " + this.permanent);
     }
 
     @Override

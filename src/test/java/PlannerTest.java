@@ -16,13 +16,13 @@ public class PlannerTest {
     @BeforeEach
     void setUp() {
         // Sample task
-        testTask = new Task("Tasker", "Monday", 2, "Test task", "YMH");
+        testTask = new Task("Tasker", "Monday", 2, "Test task", "YMH", false);
 
         // Planner setup
         planner = new Planner();
         planner.addTask(testTask);
-        planner.addTask(new Task("Task 1", "Monday", 1, "Desc 1", "Loc 1"));
-        planner.addTask(new Task("Task 2", "Tuesday", 2, "Desc 2", "Loc 2"));
+        planner.addTask(new Task("Task 1", "Monday", 1, "Desc 1", "Loc 1", false));
+        planner.addTask(new Task("Task 2", "Tuesday", 2, "Desc 2", "Loc 2", false));
     }
 
     @AfterEach
@@ -36,7 +36,7 @@ public class PlannerTest {
 
     @Test
     void testAddTask() {
-        Task newTask = new Task("Another", "Wednesday", 3, "Desc", "Loc");
+        Task newTask = new Task("Another", "Wednesday", 3, "Desc", "Loc", false);
         planner.addTask(newTask);
         assertTrue(planner.getTasks().contains(newTask), "New task should be added");
     }
@@ -86,5 +86,15 @@ public class PlannerTest {
         Planner loaded = assertDoesNotThrow(() -> Planner.loadFromFile());
         assertNotNull(loaded, "Loaded planner should not be null");
         assertEquals(0, loaded.getTasks().size(), "New planner should have 0 tasks");
+    }
+
+    @Test
+    void testClearTasks() {
+        // Add a permanent task
+        Task permanentTask = new Task("Permanent", "Friday", 4, "Permanent task", "Loc", true);
+        planner.addTask(permanentTask);
+        planner.clearTasks();
+        assertEquals(1, planner.getTasks().size(), "Should only have 1 permanent task");
+        assertEquals("Permanent", planner.getTasks().get(0).getName(), "Permanent task should be preserved");
     }
 }

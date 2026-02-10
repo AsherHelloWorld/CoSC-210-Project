@@ -69,8 +69,11 @@ public class UI {
         String description = s.nextLine();
         System.out.print("Enter task location: ");
         String location = s.nextLine();
+        System.out.print("Is this task permanent? (true/false): ");
+        boolean permanent = s.nextBoolean();
+        s.nextLine(); // consume newline
 
-        Task newTask = new Task(name, date, time, description, location);
+        Task newTask = new Task(name, date, time, description, location, permanent);
         p.addTask(newTask);
         System.out.println("Task added successfully!");
     }

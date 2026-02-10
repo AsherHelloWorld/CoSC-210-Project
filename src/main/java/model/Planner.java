@@ -13,7 +13,7 @@ public class Planner implements Serializable, Searchable {
 
     // MODIFIES: this
     // EFFECTS: adds a new task to this planner by asking the user for the task information.
-    public void addTask(){
+    public void addTask() {
         Scanner s = new Scanner(System.in);
         System.out.println("Enter task name:");
         String name = s.nextLine();
@@ -26,14 +26,16 @@ public class Planner implements Serializable, Searchable {
         String description = s.nextLine();
         System.out.println("Enter task location:");
         String location = s.nextLine();
+        System.out.println("Is this task permanent? (true/false):");
+        boolean permanent = s.nextBoolean();
              
-        taskList.add(new Task(name, date, time, description, location));
+        taskList.add(new Task(name, date, time, description, location, permanent));
     }
 
     // REQUIRES: t is not null
     // MODIFIES: this
     // EFFECTS: adds the given task to this planner.
-    public void addTask(Task t){
+    public void addTask(Task t) {
         taskList.add(t);
     }
 
@@ -51,7 +53,9 @@ public class Planner implements Serializable, Searchable {
         return taskList;
     }
 
-    public void saveToFile(){
+    // MODIFIES: this
+    // EFFECTS: saves the planner to file.
+    public void saveToFile() {
         try{
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_PATH));
         out.writeObject(this);
@@ -62,7 +66,8 @@ public class Planner implements Serializable, Searchable {
         }
     }
 
-    public static Planner loadFromFile(){
+    // EFFECTS: loads the planner from file and returns it. If the file does not exist, returns a new empty planner.
+    public static Planner loadFromFile() {
         try{
             File file = new File(FILE_PATH);
             file.getParentFile().mkdirs();
@@ -79,6 +84,7 @@ public class Planner implements Serializable, Searchable {
             return new Planner();
         }
     }
+
     @Override
     // EFFECTS: searchs for a task with a given keyword, and then displays it. 
     public void search(String keyword) {
@@ -92,6 +98,16 @@ public class Planner implements Serializable, Searchable {
         }
         if (!found) {
             System.out.println("No tasks found with the keyword: " + keyword);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: clears all non-permanent tasks from the planner.
+    public void clearTasks() {
+        for(int i = taskList.size() - 1; i >= 0; i--) {
+            if(!taskList.get(i).isPermanent()) {
+                taskList.remove(i);
+            }
         }
     }
 }
