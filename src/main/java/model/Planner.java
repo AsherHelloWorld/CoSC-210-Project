@@ -1,35 +1,26 @@
 package model;
+
 import java.util.*;
-import java.io.*;
+
+import org.json.JSONArray;
 
 // Represents a weekly planner that contains a list of tasks.
-public class Planner implements Serializable, Searchable {
+public class Planner implements Searchable {
 
-    private static final long serialVersionUID = 1L;
-    private static final String FILE_PATH = "data/planner.ser";
+    private ArrayList<Task> taskList = new ArrayList<Task>();
 
-
-    ArrayList<Task> taskList = new ArrayList<Task>();
-
+    // REQUIRES: jsonArray is not null
     // MODIFIES: this
-    // EFFECTS: adds a new task to this planner by asking the user for the task information.
-    public void addTask() {
-        Scanner s = new Scanner(System.in);
-        System.out.println("Enter task name:");
-        String name = s.nextLine();
-        System.out.println("Enter task date:");
-        String date = s.nextLine();
-        System.out.println("Enter task time (in hours):");
-        int time = s.nextInt();
-        s.nextLine(); // consume newline
-        System.out.println("Enter task description:");
-        String description = s.nextLine();
-        System.out.println("Enter task location:");
-        String location = s.nextLine();
-        System.out.println("Is this task permanent? (true/false):");
-        boolean permanent = s.nextBoolean();
-             
-        taskList.add(new Task(name, date, time, description, location, permanent));
+    // EFFECTS: constructs a planner from a JSON array of tasks.
+    public Planner(JSONArray jsonArray) {
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Task t = new Task(jsonArray.getJSONObject(i));
+            taskList.add(t);
+        }
+    }
+
+    public Planner() {
+        // Default constructor
     }
 
     // REQUIRES: t is not null
@@ -39,77 +30,41 @@ public class Planner implements Serializable, Searchable {
         taskList.add(t);
     }
 
-    // EFFECTS: returns the list of all tasks in this planner. 
+    // REQUIRES: taskList is not null
+    // EFFECTS: returns the list of all tasks in this planner.
     public ArrayList<Task> getTasks() {
-        if (taskList.isEmpty()) {
-            System.out.println("No tasks available.");
-        } else {
-            for (Task task : taskList) {
-                System.out.println("Task number: " + (taskList.indexOf(task) + 1));
-                ///task.display();
-                System.out.println();
-            }
-        }    
         return taskList;
     }
 
-    // MODIFIES: this
-    // EFFECTS: saves the planner to file.
-    public void saveToFile() {
-        try{
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_PATH));
-        out.writeObject(this);
-        out.close();
-        } catch (IOException e){
-            //System.out.println("Error saving planner to file: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // EFFECTS: loads the planner from file and returns it. If the file does not exist, returns a new empty planner.
-    public static Planner loadFromFile() {
-        try{
-            File file = new File(FILE_PATH);
-            file.getParentFile().mkdirs();
-
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_PATH));
-        Planner planner = (Planner) in.readObject();
-        in.close();
-        return planner;
-        } catch (IOException e){
-            System.out.println("Error loading planner from file: " + e.getMessage());
-            return new Planner();
-        } catch (ClassNotFoundException e){
-            System.out.println("Class not found: " + e.getMessage());
-            return new Planner();
-        }
-    }
-
     @Override
-    // EFFECTS: searchs for a task with a given keyword, and then displays it. 
-    public void search(String keyword) {
-        boolean found = false;
+    // EFFECTS: searchs for a task with a given keyword, and then displays it.
+    // returns null if no task is found with the given keyword.
+    public String search(String keyword) {
         for (Task task : taskList) {
             if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                //task.display();
-                System.out.println();
-                found = true;
+                return task.display();
             }
         }
-        if (!found) {
-            System.out.println("No tasks found with the keyword: " + keyword);
-        }
+        return null;
     }
 
     // MODIFIES: this
     // EFFECTS: clears all non-permanent tasks from the planner.
     public void clearTasks() {
-        for(int i = taskList.size() - 1; i >= 0; i--) {
-            if(!taskList.get(i).isPermanent()) {
+        for (int i = taskList.size() - 1; i >= 0; i--) {
+            if (!taskList.get(i).isPermanent()) {
                 taskList.remove(i);
             }
         }
     }
+
+    // EFFECTS: returns a JSON array representation of the tasks in this planner.
+    // REQUIRES: taskList is not null
+    public JSONArray toJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (Task t : taskList) {
+            jsonArray.put(t.toJson());
+        }
+        return jsonArray;
+    }
 }
-
-

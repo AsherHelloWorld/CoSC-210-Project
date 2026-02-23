@@ -1,8 +1,11 @@
 import model.Planner;
 import model.Task;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 import org.junit.jupiter.api.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,42 +53,36 @@ public class PlannerTest {
 
     @Test
     void testSearchFound() {
-        // Should not throw an exception when task exists
-        assertDoesNotThrow(() -> planner.search("Tasker"));
+        String result = planner.search("Tasker");
+        assertNotNull(result);
+        assertTrue(result.contains("Tasker"));
     }
 
     @Test
     void testSearchNotFound() {
-        // Should throw exception (if your search method is implemented that way)
-        assertThrows(IllegalArgumentException.class, () -> planner.search("NonExistingTask"));
+        assertNull(planner.search("Nonexistent"));
     }
 
     @Test
-    void testSaveAndLoadPlanner() {
-        // Save planner to file
-        assertDoesNotThrow(() -> planner.saveToFile());
+    void testWriterGeneralPlanner() {
+        try {
+            Planner p = new Planner();
+            p.addTask(new Task("Study", "Monday", 2, "Read Chapter 1", "Library", false));
 
-        // Load planner from file
-        Planner loaded = assertDoesNotThrow(() -> Planner.loadFromFile());
+            // Use JsonWriter instead of p.saveToFile()
+            JsonWriter writer = new JsonWriter("./data/testGeneralPlanner.json");
+            writer.open();
+            writer.write(p);
+            writer.close();
 
-        // Check tasks are preserved
-        ArrayList<Task> tasks = loaded.getTasks();
-        assertEquals(3, tasks.size(), "Loaded planner should have 3 tasks");
-        assertEquals("Tasker", tasks.get(0).getName());
-        assertEquals("Task 1", tasks.get(1).getName());
-        assertEquals("Task 2", tasks.get(2).getName());
-    }
-
-    @Test
-    void testLoadNonExistentPlanner() {
-        // Ensure file does not exist
-        File file = new File(TEST_FILE);
-        if (file.exists()) file.delete();
-
-        // Load should return a new empty planner
-        Planner loaded = assertDoesNotThrow(() -> Planner.loadFromFile());
-        assertNotNull(loaded, "Loaded planner should not be null");
-        assertEquals(0, loaded.getTasks().size(), "New planner should have 0 tasks");
+            // Then, use JsonReader to read it back and verify the data
+            JsonReader reader = new JsonReader("./data/testGeneralPlanner.json");
+            p = reader.read();
+            assertEquals(1, p.getTasks().size());
+            assertEquals("Study", p.getTasks().get(0).getName());
+        } catch (IOException e) {
+            fail("Exception should not have been thrown");
+        }
     }
 
     @Test
@@ -97,4 +94,29 @@ public class PlannerTest {
         assertEquals(1, planner.getTasks().size(), "Should only have 1 permanent task");
         assertEquals("Permanent", planner.getTasks().get(0).getName(), "Permanent task should be preserved");
     }
+
+    @Test
+    void testClearTasksNoPermanent() {
+        planner.clearTasks();
+        assertEquals(0, planner.getTasks().size(), "All tasks should be cleared when no permanent tasks exist");
+    }
+
+    @Test
+    void testClearTasksAllPermanent() {
+        // Clear existing tasks and add only permanent tasks
+        planner.clearTasks();
+        Task permanentTask1 = new Task("Permanent 1", "Friday", 4, "Permanent task 1", "Loc", true);
+        Task permanentTask2 = new Task("Permanent 2", "Saturday", 5, "Permanent task 2", "Loc", true);
+        planner.addTask(permanentTask1);
+        planner.addTask(permanentTask2);
+        planner.clearTasks();
+        assertEquals(2, planner.getTasks().size(), "All permanent tasks should be preserved");
+    }
+
+    @Test
+    void testClearTasksEmptyPlanner() {
+        planner.clearTasks();
+        assertEquals(0, planner.getTasks().size(), "Clearing an already empty planner should not cause errors");
+    }
+
 }

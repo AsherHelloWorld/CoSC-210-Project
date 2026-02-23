@@ -1,14 +1,20 @@
 package ui;
 
 import java.util.Scanner;
-import java.util.ArrayList;
 
 import model.Planner;
 import model.Task;
 
+import persistence.JsonReader;
+import persistence.JsonWriter;
+
+// Represents the user interface for the weekly planner application.
 public class UI {
     public Planner p;
     public Scanner s;
+
+    // file used by the JsonReader and JsonWriter to save and load the planner
+    private static final String JSON_STORE = "./data/planner.json";
 
     public UI() {
         p = new Planner();
@@ -30,10 +36,26 @@ public class UI {
                     viewTasks();
                     break;
                 case 3:
-                   p.saveToFile();
+                    //instantiate JsonWriter and save the planner to file
+                    JsonWriter jsonWriter = new JsonWriter(JSON_STORE);
+                    try {
+                        jsonWriter.open();
+                        jsonWriter.write(p);
+                        jsonWriter.close();
+                        System.out.println("Planner saved successfully!");
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while saving the planner: " + e.getMessage());
+                    }
                     break;
                 case 4:
-                    p = Planner.loadFromFile();
+                    // load using JsonReader
+                    JsonReader jsonReader = new JsonReader(JSON_STORE);
+                    try {
+                        p = jsonReader.read();
+                        System.out.println("Planner loaded successfully!");
+                    } catch (Exception e) {
+                        System.out.println("An error occurred while loading the planner: " + e.getMessage());
+                    }
                     break;
                 case 5:
                     running = false;
@@ -44,8 +66,9 @@ public class UI {
         }
     }
 
-    //Prints the main menu options
+    // Prints the main menu options
     private void printMenu() {
+        System.out.println();
         System.out.println("1. Add Task");
         System.out.println("2. View Tasks");
         System.out.println("3. Save Planner");
@@ -54,7 +77,7 @@ public class UI {
         System.out.print("Enter your choice: ");
     }
 
-    //Prompts user for task details and adds the task to the planner
+    // Prompts user for task details and adds the task to the planner
     private void addTask() {
         System.out.println();
         System.out.println("Adding a new task:");
@@ -78,11 +101,11 @@ public class UI {
         System.out.println("Task added successfully!");
     }
 
-    //Prints out a list of all tasks in the planner
+    // Prints out a list of all tasks in the planner
     private void viewTasks() {
         System.out.println();
         System.out.println("Tasks in the planner:");
-        p.getTasks();
+        p.getTasks().forEach(Task::display);
     }
 
 }
