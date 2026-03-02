@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Scanner;
 
+import model.NormalTask;
 import model.Planner;
 import model.Task;
 import persistence.JsonReader;
@@ -91,11 +92,8 @@ public class UI {
         String description = s.nextLine();
         System.out.print("Enter task location: ");
         String location = s.nextLine();
-        System.out.print("Is this task permanent? (true/false): ");
-        boolean permanent = s.nextBoolean();
-        s.nextLine(); // consume newline
 
-        Task newTask = new Task(name, date, time, description, location);
+        NormalTask newTask = new NormalTask(name, date, time, description, location);
         p.addTask(newTask);
         System.out.println("Task added successfully!");
     }
@@ -104,7 +102,7 @@ public class UI {
     private void viewTasks() {
         System.out.println();
         System.out.println("Tasks in the planner:");
-        p.getTasks().forEach(Task::display);
+        p.getTasks().forEach(NormalTask::display);
     }
 
 }
