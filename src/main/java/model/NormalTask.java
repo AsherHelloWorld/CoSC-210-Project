@@ -86,8 +86,8 @@ public class NormalTask extends Task implements Displayable, Searchable {
     // EFFECTS: displays the details of this task.
     // REQUIRES: this task has valid details (name, date, time, description, location)
     public String display() {
-        return "Task Name: " + this.name + "\nDate: " + this.date + "\nTime: " + this.time + "\nDescription: " + this.description + "\nLocation: " + this.location + "\nPermanent: " + this.permanent;
-    }
+        return "Normal Task: " + getName() + " on " + getDate() + " at " + getTime() + ":00. Description: "
+        + getDescription() + ". Location: " + getLocation();    }
 
     @Override
     // MODIFIES: this

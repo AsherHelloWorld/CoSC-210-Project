@@ -3,9 +3,8 @@ package ui;
 import java.util.Scanner;
 
 import model.NormalTask;
+import model.PermaTask;
 import model.Planner;
-import model.Task;
-import model.permaTask;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -101,7 +100,7 @@ public class UI {
         System.out.print("Is this task permanent? (true/false): ");
         boolean isPermanent = s.nextBoolean();
         if(isPermanent) {
-            permaTask newTask = new permaTask(name, date, time, description, location);
+            PermaTask newTask = new PermaTask(name, date, time, description, location);
             p.addTask(newTask);
             System.out.println("Permanent task added successfully!");
         } else {

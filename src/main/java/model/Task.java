@@ -55,13 +55,11 @@ public abstract class Task {
     // EFFECTS: sets the location of this task to the given location.
     public abstract void setLocation(String location);
 
-    @Override
     // MODIFIES: this
     // EFFECTS: displays the details of this task.
     // REQUIRES: this task has valid details (name, date, time, description, location)
     public abstract String display();
 
-    @Override
     // MODIFIES: this
     // EFFECTS: searches for a given keyword in the name of this task, and then displays the task if found.
     // REQUIRES: keyword is not null

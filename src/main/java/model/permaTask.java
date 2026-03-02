@@ -1,12 +1,12 @@
 package model;
 
-public class permaTask extends Task {
+public class PermaTask extends NormalTask {
     
-        public permaTask(String name, String date, int time, String description, String location) {
+        public PermaTask(String name, String date, int time, String description, String location) {
             super(name, date, time, description, location);
         }
     
-        public permaTask() {
+        public PermaTask() {
             super();
         }
     
