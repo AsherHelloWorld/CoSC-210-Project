@@ -1,60 +1,63 @@
 package model;
 
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 // Represents a weekly planner that contains a list of tasks.
 public class Planner implements Searchable {
 
-    private ArrayList<NormalTask> taskList = new ArrayList<NormalTask>();
+    private List<Task> taskList = new ArrayList<>();
 
     // REQUIRES: jsonArray is not null
     // MODIFIES: this
-    // EFFECTS: constructs a planner from a JSON array of tasks.
+    // EFFECTS: constructs a planner from a JSON array of tasks
     public Planner(JSONArray jsonArray) {
         for (int i = 0; i < jsonArray.length(); i++) {
-            NormalTask t = new NormalTask(jsonArray.getJSONObject(i));
-            taskList.add(t);
+            JSONObject obj = jsonArray.getJSONObject(i);
+            boolean isPermanent = obj.optBoolean("permanent", false);
+            if (isPermanent) {
+                taskList.add(new PermaTask(obj));
+            } else {
+                taskList.add(new NormalTask(obj));
+            }
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: constructs an empty planner
     public Planner() {
-        // Default constructor
     }
 
     // REQUIRES: t is not null
     // MODIFIES: this
-    // EFFECTS: adds the given task to this planner.
-    public void addTask(NormalTask t) {
+    // EFFECTS: adds the given task to this planner
+    public void addTask(Task t) {
         taskList.add(t);
     }
 
-    public void addTask(PermaTask t) {
-        taskList.add(t);
-    }
-
-    // REQUIRES: taskList is not null
-    // EFFECTS: returns the list of all tasks in this planner.
-    public ArrayList<NormalTask> getTasks() {
+    // EFFECTS: returns the list of all tasks in this planner
+    public List<Task> getTasks() {
         return taskList;
     }
 
     @Override
-    // EFFECTS: searchs for a task with a given keyword, and then displays it.
-    // returns null if no task is found with the given keyword.
+    // EFFECTS: searches for a task with a given keyword, and returns its display
+    //          string if found; returns null if no task is found
     public String search(String keyword) {
-        for (NormalTask task : taskList) {
-            if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
-                return task.display();
+        for (Task task : taskList) {
+            String result = task.search(keyword);
+            if (result != null) {
+                return result;
             }
         }
         return null;
     }
 
     // MODIFIES: this
-    // EFFECTS: clears all non-permanent tasks from the planner.
+    // EFFECTS: clears all non-permanent tasks from the planner
     public void clearTasks() {
         for (int i = taskList.size() - 1; i >= 0; i--) {
             if (!(taskList.get(i) instanceof PermaTask)) {
@@ -63,12 +66,18 @@ public class Planner implements Searchable {
         }
     }
 
-    // EFFECTS: returns a JSON array representation of the tasks in this planner.
-    // REQUIRES: taskList is not null
+    // EFFECTS: returns a JSON array representation of the tasks in this planner
     public JSONArray toJson() {
         JSONArray jsonArray = new JSONArray();
-        for (NormalTask t : taskList) {
-            jsonArray.put(t.toJson());
+        for (Task t : taskList) {
+            JSONObject obj = t.toJson();
+            // Add a flag for permanent tasks
+            if (t instanceof PermaTask) {
+                obj.put("permanent", true);
+            } else {
+                obj.put("permanent", false);
+            }
+            jsonArray.put(obj);
         }
         return jsonArray;
     }

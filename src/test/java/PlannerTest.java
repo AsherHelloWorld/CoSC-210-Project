@@ -1,6 +1,6 @@
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.NormalTask;
+import model.PermaTask;
 import model.Planner;
 import model.Task;
 import persistence.JsonReader;
@@ -21,14 +22,11 @@ public class PlannerTest {
 
     private Planner planner;
     private NormalTask testTask;
-    private static final String TEST_FILE = "data/planner.ser";
+    private static final String TEST_FILE = "data/testPlanner.json";
 
     @BeforeEach
     void setUp() {
-        // Sample task
         testTask = new NormalTask("Tasker", "Monday", 2, "Test task", "YMH");
-
-        // Planner setup
         planner = new Planner();
         planner.addTask(testTask);
         planner.addTask(new NormalTask("Task 1", "Monday", 1, "Desc 1", "Loc 1"));
@@ -37,93 +35,93 @@ public class PlannerTest {
 
     @AfterEach
     void tearDown() {
-        // Delete the test file so it doesn't interfere with real planner
         File file = new File(TEST_FILE);
-        if (file.exists()) {
-            file.delete();
-        }
+        if (file.exists()) file.delete();
     }
 
     @Test
-    void testAddTask() {
-        NormalTask newTask = new NormalTask("Another", "Wednesday", 3, "Desc", "Loc");
-        planner.addTask(newTask);
-        assertTrue(planner.getTasks().contains(newTask), "New task should be added");
+    void testAddTaskNormalAndPerma() {
+        NormalTask n = new NormalTask("Normal", "Wed", 3, "Desc", "Loc");
+        PermaTask p = new PermaTask("Permanent", "Fri", 4, "Desc", "Office");
+
+        planner.addTask(n);
+        planner.addTask(p);
+
+        List<Task> tasks = planner.getTasks();
+        assertTrue(tasks.contains(n));
+        assertTrue(tasks.contains(p));
     }
 
     @Test
     void testGetTasks() {
-        ArrayList<NormalTask> tasks = planner.getTasks();
-        assertEquals(3, tasks.size(), "Planner should have 3 tasks initially");
+        List<Task> tasks = planner.getTasks();
+        assertEquals(3, tasks.size());
         assertEquals("Tasker", tasks.get(0).getName());
     }
 
     @Test
-    void testSearchFound() {
-        String result = planner.search("Tasker");
-        assertNotNull(result);
-        assertTrue(result.contains("Tasker"));
-    }
+    void testSearch() {
+        assertNotNull(planner.search("Tasker"));
+        assertNull(planner.search("Missing"));
 
-    @Test
-    void testSearchNotFound() {
-        assertNull(planner.search("Nonexistent"));
-    }
-
-    @Test
-    void testWriterGeneralPlanner() {
-        try {
-            Planner p = new Planner();
-            p.addTask(new NormalTask("Study", "Monday", 2, "Read Chapter 1", "Library"));
-
-            // Use JsonWriter instead of p.saveToFile()
-            JsonWriter writer = new JsonWriter("./data/testGeneralPlanner.json");
-            writer.open();
-            writer.write(p);
-            writer.close();
-
-            // Then, use JsonReader to read it back and verify the data
-            JsonReader reader = new JsonReader("./data/testGeneralPlanner.json");
-            p = reader.read();
-            assertEquals(1, p.getTasks().size());
-            assertEquals("Study", p.getTasks().get(0).getName());
-        } catch (IOException e) {
-            fail("Exception should not have been thrown");
-        }
+        PermaTask p = new PermaTask("Important", "Monday", 1, "Desc", "Loc");
+        planner.addTask(p);
+        assertEquals(p.display(), planner.search("Important"));
     }
 
     @Test
     void testClearTasks() {
-        // Add a permanent task
-        NormalTask permanentTask = new NormalTask("Permanent", "Friday", 4, "Permanent task", "Loc");
-        planner.addTask(permanentTask);
+        PermaTask p = new PermaTask("Permanent", "Fri", 4, "Desc", "Loc");
+        planner.addTask(p);
+
         planner.clearTasks();
-        assertEquals(1, planner.getTasks().size(), "Should only have 1 permanent task");
-        assertEquals("Permanent", planner.getTasks().get(0).getName(), "Permanent task should be preserved");
+
+        List<Task> remaining = planner.getTasks();
+        assertEquals(1, remaining.size());
+        assertTrue(remaining.get(0) instanceof PermaTask);
+        assertEquals("Permanent", remaining.get(0).getName());
     }
 
     @Test
     void testClearTasksNoPermanent() {
         planner.clearTasks();
-        assertEquals(0, planner.getTasks().size(), "All tasks should be cleared when no permanent tasks exist");
+        assertEquals(0, planner.getTasks().size());
     }
 
     @Test
     void testClearTasksAllPermanent() {
-        // Clear existing tasks and add only permanent tasks
+        planner = new Planner();
+        PermaTask p1 = new PermaTask("Permanent 1", "Fri", 4, "Desc1", "Loc");
+        PermaTask p2 = new PermaTask("Permanent 2", "Sat", 5, "Desc2", "Loc");
+        planner.addTask(p1);
+        planner.addTask(p2);
+
         planner.clearTasks();
-        NormalTask permanentTask1 = new NormalTask("Permanent 1", "Friday", 4, "Permanent task 1", "Loc");
-        NormalTask permanentTask2 = new NormalTask("Permanent 2", "Saturday", 5, "Permanent task 2", "Loc");
-        planner.addTask(permanentTask1);
-        planner.addTask(permanentTask2);
-        planner.clearTasks();
-        assertEquals(2, planner.getTasks().size(), "All permanent tasks should be preserved");
+        List<Task> remaining = planner.getTasks();
+        assertEquals(2, remaining.size());
+        assertTrue(remaining.stream().allMatch(t -> t instanceof PermaTask));
     }
 
     @Test
-    void testClearTasksEmptyPlanner() {
-        planner.clearTasks();
-        assertEquals(0, planner.getTasks().size(), "Clearing an already empty planner should not cause errors");
-    }
+    void testJsonWriterAndReader() {
+        try {
+            Planner p = new Planner();
+            p.addTask(new NormalTask("Study", "Mon", 2, "Read 1", "Library"));
+            p.addTask(new PermaTask("Permanent Study", "Tue", 3, "Read 2", "Library"));
 
+            JsonWriter writer = new JsonWriter(TEST_FILE);
+            writer.open();
+            writer.write(p);
+            writer.close();
+
+            JsonReader reader = new JsonReader(TEST_FILE);
+            Planner loaded = reader.read();
+
+            assertEquals(2, loaded.getTasks().size());
+            assertTrue(loaded.getTasks().stream().anyMatch(t -> t.getName().equals("Study")));
+            assertTrue(loaded.getTasks().stream().anyMatch(t -> t.getName().equals("Permanent Study")));
+        } catch (IOException e) {
+            fail("IOException should not occur");
+        }
+    }
 }
