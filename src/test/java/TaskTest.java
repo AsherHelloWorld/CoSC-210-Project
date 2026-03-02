@@ -1,14 +1,13 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.NormalTask;
-import model.Task;
-
 
 public class TaskTest {
 
-    NormalTask tester;
+    private NormalTask tester;
 
     @BeforeEach
     void setup() {
@@ -16,62 +15,38 @@ public class TaskTest {
     }
 
     @Test
-    public void testName() {
+    void testGetters() {
         assertEquals("Tasker", tester.getName());
-    }
-
-    @Test
-    public void testDate() {
         assertEquals("Monday", tester.getDate());
-    }
-
-    @Test
-    public void testTime() {
         assertEquals(2, tester.getTime());
-    }
-
-    @Test 
-    public void testDescription() {
         assertEquals("Test task", tester.getDescription());
-    }
-
-    @Test
-    public void testLocation() {
         assertEquals("YMH", tester.getLocation());
     }
 
     @Test
-    public void testSetName() {
+    void testSetters() {
         tester.setName("NewTasker");
-        assertEquals("NewTasker", tester.getName());
-    }
-
-    @Test
-    public void testSetDate() {
         tester.setDate("Tuesday");
-        assertEquals("Tuesday", tester.getDate());
-    }
-
-    @Test
-    public void testSetTime() {
         tester.setTime(3);
-        assertEquals(3, tester.getTime());
-    }
-
-    @Test
-    public void testSetDescription() {
         tester.setDescription("Updated task");
-        assertEquals("Updated task", tester.getDescription());
-    }
-
-    @Test
-    public void testSetLocation() {
         tester.setLocation("NewYMH");
+
+        assertEquals("NewTasker", tester.getName());
+        assertEquals("Tuesday", tester.getDate());
+        assertEquals(3, tester.getTime());
+        assertEquals("Updated task", tester.getDescription());
         assertEquals("NewYMH", tester.getLocation());
     }
 
     @Test
-    public void testDisplay() {
-        tester.display();   // just check it runs
+    void testDisplayAndSearch() {
+        String display = tester.display();
+        assertNotNull(display);
+
+        String found = tester.search("Tasker");
+        assertNotNull(found);
+        assertEquals(display, found);
+
+        assertEquals(null, tester.search("Missing"));
     }
 }

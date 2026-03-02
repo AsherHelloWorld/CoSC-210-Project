@@ -1,13 +1,23 @@
 package model;
 
-public abstract class Task {
-    private String name;
-    private String date;
-    private int time;
-    private String description;
-    private String location;
+import org.json.JSONObject;
 
-    public Task(String name, String date, int time, String description, String location) {
+// Represents a task with a name, date, time, description, and location.
+public abstract class Task {
+
+    protected String name;
+    protected String date;
+    protected int time;
+    protected String description;
+    protected String location;
+
+    // REQUIRES: name, date, description, and location are not null;
+    //           time is a positive integer (in hours)
+    // MODIFIES: this
+    // EFFECTS: constructs a task with the given name, date, time,
+    //          description, and location.
+    public Task(String name, String date, int time,
+                String description, String location) {
         this.name = name;
         this.date = date;
         this.time = time;
@@ -15,52 +25,84 @@ public abstract class Task {
         this.location = location;
     }
 
-    public Task() {
-    
+    // EFFECTS: returns the name of this task.
+    public String getName() {
+        return name;
     }
 
-    // EFFECTS: returns the name of this event.
-    public abstract String getName();
+    // REQUIRES: name is not null
+    // MODIFIES: this
+    // EFFECTS: sets the name of this task to the given name.
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    // EFFECTS: returns the date of this event.
-    public abstract String getDate();
-    
-    // EFFECTS: returns the time of this event.
-    public abstract int getTime();
-    
+    public abstract String search(String keyword);
 
-    // EFFECTS: returns the description of this event.
-    public abstract String getDescription();
-  
+    // EFFECTS: returns the date of this task.
+    public String getDate() {
+        return date;
+    }
+
     // REQUIRES: date is not null
     // MODIFIES: this
     // EFFECTS: sets the date of this task to the given date.
-    public abstract void setDate(String date);
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    // EFFECTS: returns the time of this task.
+    public int getTime() {
+        return time;
+    }
 
     // REQUIRES: time is a positive integer (in hours)
     // MODIFIES: this
     // EFFECTS: sets the time of this task to the given time.
-    public abstract void setTime(int time);
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    // EFFECTS: returns the description of this task.
+    public String getDescription() {
+        return description;
+    }
 
     // REQUIRES: description is not null
     // MODIFIES: this
     // EFFECTS: sets the description of this task to the given description.
-    public abstract void setDescription(String description);
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     // EFFECTS: returns the location of this task.
-    public abstract String getLocation();
+    public String getLocation() {
+        return location;
+    }
 
     // REQUIRES: location is not null
     // MODIFIES: this
     // EFFECTS: sets the location of this task to the given location.
-    public abstract void setLocation(String location);
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-    // MODIFIES: this
+    // EFFECTS: returns this task as a JSONObject
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", name);
+        json.put("date", date);
+        json.put("time", time);
+        json.put("description", description);
+        json.put("location", location);
+        return json;
+    }
+
     // EFFECTS: displays the details of this task.
-    // REQUIRES: this task has valid details (name, date, time, description, location)
     public abstract String display();
 
     // MODIFIES: this
-    // EFFECTS: searches for a given keyword in the name of this task, and then displays the task if found.
+    // EFFECTS: searches for a given keyword in the name of this task, and
+    //          returns the task details if found; otherwise returns null
     // REQUIRES: keyword is not null
-    public abstract String search(String keyword);
+}

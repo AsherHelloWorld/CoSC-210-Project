@@ -1,77 +1,56 @@
 package model;
 
-public class PermaTask extends Task {
+import org.json.JSONObject;
 
-     private String name;
-    private String date;
-    private int time;
-    private String description;
-    private String location;
-    
-        public PermaTask(String name, String date, int time, String description, String location) {
-            super(name, date, time, description, location);
-        }
-    
-        public PermaTask() {
-            super();
-        }
-    
-        @Override
-        // EFFECTS: returns a string representation of this permanent task.
-        public String display() {
-            return "Permanent Task: " + getName() + " on " + getDate() + " at " + getTime() + ":00. Description: "
-                    + getDescription() + ". Location: " + getLocation();
-        }
+// Represents a permanent task that survives planner wipes
+public class PermaTask extends Task implements Displayable, Searchable {
 
-        @Override
-        public String getName() {
-            return this.name;
-        }
+    // REQUIRES: name, date, description, and location are not null;
+    //           time is a positive integer (in hours)
+    // MODIFIES: this
+    // EFFECTS: constructs a permanent task with the given details
+    public PermaTask(String name, String date, int time,
+                     String description, String location) {
+        super(name, date, time, description, location);
+    }
 
-        @Override
-        public String getDate() {
-            return this.date;
-        }
+    // REQUIRES: json contains all required task fields
+    // MODIFIES: this
+    // EFFECTS: constructs a permanent task from JSON data
+    public PermaTask(JSONObject json) {
+        super(
+            json.getString("name"),
+            json.getString("date"),
+            json.getInt("time"),
+            json.getString("description"),
+            json.getString("location")
+        );
+    }
 
-        @Override
-        public int getTime() {
-            return this.time;
-        }
+    // MODIFIES: this
+    // EFFECTS: constructs a default permanent task
+    public PermaTask() {
+        super("Default Permanent Task", "Monday", 1,
+              "No Description", "No Location");
+    }
 
-        @Override
-        public String getDescription() {
-            return this.description;
-        }
+    @Override
+    // EFFECTS: displays the details of this permanent task
+    // REQUIRES: this task has valid details (name, date, time, description, location)
+    public String display() {
+        return "Permanent Task: " + name + " on " + date
+                + " at " + time + ":00. Description: "
+                + description + ". Location: " + location;
+    }
 
-        @Override
-        public void setDate(String date) {
-            this.date = date;
+    @Override
+    // EFFECTS: searches for a given keyword in the name of this task,
+    //          and returns the task details if found; otherwise returns null
+    // REQUIRES: keyword is not null
+    public String search(String keyword) {
+        if (name.toLowerCase().contains(keyword.toLowerCase())) {
+            return display();
         }
-
-        @Override
-        public void setTime(int time) {
-            this.time = time;
-        }
-
-        @Override
-        public void setDescription(String description) {
-            this.description = description;
-        }
-        }
-
-        @Override
-        public String getLocation() {
-            return this.location;
-        }
-
-        @Override
-        public void setLocation(String location) {
-            this.location = location;
-        }
-
-        @Override
-        public String search(String keyword) {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'search'");
-        }
-    
+        return null;
+    }
+}
