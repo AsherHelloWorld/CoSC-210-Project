@@ -52,9 +52,6 @@ public class Planner implements Searchable {
     // EFFECTS: clears all non-permanent tasks from the planner.
     public void clearTasks() {
         for (int i = taskList.size() - 1; i >= 0; i--) {
-            if (!taskList.get(i).isPermanent()) {
-                taskList.remove(i);
-            }
         }
     }
 

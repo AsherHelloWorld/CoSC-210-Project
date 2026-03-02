@@ -1,9 +1,8 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.Task;
-
-import org.junit.jupiter.api.BeforeEach;
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class TaskTest {
@@ -12,7 +11,7 @@ public class TaskTest {
 
     @BeforeEach
     void setup() {
-        tester = new Task("Tasker", "Monday", 2, "Test task", "YMH", false);
+        tester = new Task("Tasker", "Monday", 2, "Test task", "YMH");
     }
 
     @Test
@@ -73,12 +72,5 @@ public class TaskTest {
     @Test
     public void testDisplay() {
         tester.display();   // just check it runs
-    }
-
-    @Test
-    public void testPermanent() {
-        assertFalse(tester.isPermanent());
-        tester.setPermanent(true);
-        assertTrue(tester.isPermanent());
     }
 }

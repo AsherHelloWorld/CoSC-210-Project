@@ -1,14 +1,20 @@
-import model.Planner;
-import model.Task;
-import persistence.JsonReader;
-import persistence.JsonWriter;
-
-import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import model.Planner;
+import model.Task;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 public class PlannerTest {
 
@@ -19,13 +25,13 @@ public class PlannerTest {
     @BeforeEach
     void setUp() {
         // Sample task
-        testTask = new Task("Tasker", "Monday", 2, "Test task", "YMH", false);
+        testTask = new Task("Tasker", "Monday", 2, "Test task", "YMH");
 
         // Planner setup
         planner = new Planner();
         planner.addTask(testTask);
-        planner.addTask(new Task("Task 1", "Monday", 1, "Desc 1", "Loc 1", false));
-        planner.addTask(new Task("Task 2", "Tuesday", 2, "Desc 2", "Loc 2", false));
+        planner.addTask(new Task("Task 1", "Monday", 1, "Desc 1", "Loc 1"));
+        planner.addTask(new Task("Task 2", "Tuesday", 2, "Desc 2", "Loc 2"));
     }
 
     @AfterEach
@@ -39,7 +45,7 @@ public class PlannerTest {
 
     @Test
     void testAddTask() {
-        Task newTask = new Task("Another", "Wednesday", 3, "Desc", "Loc", false);
+        Task newTask = new Task("Another", "Wednesday", 3, "Desc", "Loc");
         planner.addTask(newTask);
         assertTrue(planner.getTasks().contains(newTask), "New task should be added");
     }
@@ -67,7 +73,7 @@ public class PlannerTest {
     void testWriterGeneralPlanner() {
         try {
             Planner p = new Planner();
-            p.addTask(new Task("Study", "Monday", 2, "Read Chapter 1", "Library", false));
+            p.addTask(new Task("Study", "Monday", 2, "Read Chapter 1", "Library"));
 
             // Use JsonWriter instead of p.saveToFile()
             JsonWriter writer = new JsonWriter("./data/testGeneralPlanner.json");
@@ -88,7 +94,7 @@ public class PlannerTest {
     @Test
     void testClearTasks() {
         // Add a permanent task
-        Task permanentTask = new Task("Permanent", "Friday", 4, "Permanent task", "Loc", true);
+        Task permanentTask = new Task("Permanent", "Friday", 4, "Permanent task", "Loc");
         planner.addTask(permanentTask);
         planner.clearTasks();
         assertEquals(1, planner.getTasks().size(), "Should only have 1 permanent task");
@@ -105,8 +111,8 @@ public class PlannerTest {
     void testClearTasksAllPermanent() {
         // Clear existing tasks and add only permanent tasks
         planner.clearTasks();
-        Task permanentTask1 = new Task("Permanent 1", "Friday", 4, "Permanent task 1", "Loc", true);
-        Task permanentTask2 = new Task("Permanent 2", "Saturday", 5, "Permanent task 2", "Loc", true);
+        Task permanentTask1 = new Task("Permanent 1", "Friday", 4, "Permanent task 1", "Loc");
+        Task permanentTask2 = new Task("Permanent 2", "Saturday", 5, "Permanent task 2", "Loc");
         planner.addTask(permanentTask1);
         planner.addTask(permanentTask2);
         planner.clearTasks();

@@ -1,10 +1,12 @@
-import model.Planner;
-import model.Task;
-import persistence.*;
-
-import org.junit.jupiter.api.Test;
 import java.io.IOException;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
+
+import model.Planner;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 public class Persistence {
     
@@ -43,30 +45,6 @@ public class Persistence {
             Planner loadedPlanner = reader.read();
             // CRITICAL: You must assert that the state is actually empty
             assertEquals(0, loadedPlanner.getTasks().size());
-        } catch (IOException e) {
-            fail("Exception should not have been thrown");
-        }
-    }
-
-    @Test
-    void testPersistenceGeneralPlanner() {
-        try {
-            Planner p = new Planner();
-            p.addTask(new Task("Work", "Monday", 9, "Coding", "Office", true));
-            
-            JsonWriter writer = new JsonWriter("./data/testGeneralPlanner.json");
-            writer.open();
-            writer.write(p);
-            writer.close();
-
-            JsonReader reader = new JsonReader("./data/testGeneralPlanner.json");
-            Planner loadedPlanner = reader.read();
-            
-            // Verify the content matches exactly
-            assertEquals(1, loadedPlanner.getTasks().size());
-            Task loadedTask = loadedPlanner.getTasks().get(0);
-            assertEquals("Work", loadedTask.getName());
-            assertTrue(loadedTask.isPermanent());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
         }

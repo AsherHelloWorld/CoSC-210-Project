@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import model.Planner;
 import model.Task;
-
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -96,7 +95,7 @@ public class UI {
         boolean permanent = s.nextBoolean();
         s.nextLine(); // consume newline
 
-        Task newTask = new Task(name, date, time, description, location, permanent);
+        Task newTask = new Task(name, date, time, description, location);
         p.addTask(newTask);
         System.out.println("Task added successfully!");
     }

@@ -10,15 +10,15 @@ public class Task implements Displayable, Searchable {
     private int time;
     private String description;
     private String location;
-    private boolean permanent;
 
-    public Task(String name, String date, int time, String description, String location, boolean permanent) {
+
+
+    public Task(String name, String date, int time, String description, String location) {
         this.name = name;
         this.date = date;
         this.time = time;
         this.description = description;
         this.location = location;
-        this.permanent = permanent;
     }
 
     public Task() {
@@ -27,7 +27,6 @@ public class Task implements Displayable, Searchable {
         this.time = 1;
         this.description = "No Description";
         this.location = "No Location";
-        this.permanent = false;
     }
 
     // EFFECTS: returns the name of this task.
@@ -90,18 +89,6 @@ public class Task implements Displayable, Searchable {
         this.location = location;
     }
 
-    // EFFECTS: returns whether this task is permanent.
-    public boolean isPermanent() {
-        return permanent;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: sets whether this task is permanent.
-    // REQUIRES: permanent is a boolean value
-    public void setPermanent(boolean permanent) {
-        this.permanent = permanent;
-    }
-
     @Override
     // MODIFIES: this
     // EFFECTS: displays the details of this task.
@@ -130,7 +117,6 @@ public class Task implements Displayable, Searchable {
         json.put("time", time);
         json.put("description", description);
         json.put("location", location);
-        json.put("permanent", permanent);
         return json;
     }
 
@@ -142,6 +128,5 @@ public class Task implements Displayable, Searchable {
         this.time = json.getInt("time");
         this.description = json.getString("description");
         this.location = json.getString("location");
-        this.permanent = json.getBoolean("permanent");
     }
 }
