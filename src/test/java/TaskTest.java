@@ -2,16 +2,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import model.NormalTask;
 import model.Task;
 
 
 public class TaskTest {
 
-    Task tester;
+    NormalTask tester;
 
     @BeforeEach
     void setup() {
-        tester = new Task("Tasker", "Monday", 2, "Test task", "YMH");
+        tester = new NormalTask("Tasker", "Monday", 2, "Test task", "YMH");
     }
 
     @Test

@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Scanner;
 
+import model.NormalTask;
 import model.Planner;
 import model.Task;
 import model.permaTask;
@@ -100,11 +101,11 @@ public class UI {
         System.out.print("Is this task permanent? (true/false): ");
         boolean isPermanent = s.nextBoolean();
         if(isPermanent) {
-            Task newTask = new permaTask(name, date, time, description, location);
+            permaTask newTask = new permaTask(name, date, time, description, location);
             p.addTask(newTask);
             System.out.println("Permanent task added successfully!");
         } else {
-            Task newTask = new Task(name, date, time, description, location);
+            NormalTask newTask = new NormalTask(name, date, time, description, location);
             p.addTask(newTask);
             System.out.println("Task added successfully!");
         }

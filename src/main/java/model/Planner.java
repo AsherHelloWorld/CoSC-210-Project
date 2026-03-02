@@ -8,14 +8,14 @@ import org.json.JSONArray;
 // Represents a weekly planner that contains a list of tasks.
 public class Planner implements Searchable {
 
-    private ArrayList<Task> taskList = new ArrayList<Task>();
+    private ArrayList<NormalTask> taskList = new ArrayList<NormalTask>();
 
     // REQUIRES: jsonArray is not null
     // MODIFIES: this
     // EFFECTS: constructs a planner from a JSON array of tasks.
     public Planner(JSONArray jsonArray) {
         for (int i = 0; i < jsonArray.length(); i++) {
-            Task t = new Task(jsonArray.getJSONObject(i));
+            NormalTask t = new NormalTask(jsonArray.getJSONObject(i));
             taskList.add(t);
         }
     }
@@ -27,13 +27,13 @@ public class Planner implements Searchable {
     // REQUIRES: t is not null
     // MODIFIES: this
     // EFFECTS: adds the given task to this planner.
-    public void addTask(Task t) {
+    public void addTask(NormalTask t) {
         taskList.add(t);
     }
 
     // REQUIRES: taskList is not null
     // EFFECTS: returns the list of all tasks in this planner.
-    public ArrayList<Task> getTasks() {
+    public ArrayList<NormalTask> getTasks() {
         return taskList;
     }
 
@@ -41,7 +41,7 @@ public class Planner implements Searchable {
     // EFFECTS: searchs for a task with a given keyword, and then displays it.
     // returns null if no task is found with the given keyword.
     public String search(String keyword) {
-        for (Task task : taskList) {
+        for (NormalTask task : taskList) {
             if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
                 return task.display();
             }
@@ -63,7 +63,7 @@ public class Planner implements Searchable {
     // REQUIRES: taskList is not null
     public JSONArray toJson() {
         JSONArray jsonArray = new JSONArray();
-        for (Task t : taskList) {
+        for (NormalTask t : taskList) {
             jsonArray.put(t.toJson());
         }
         return jsonArray;
