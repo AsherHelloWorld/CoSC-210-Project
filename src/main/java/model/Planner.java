@@ -31,6 +31,10 @@ public class Planner implements Searchable {
         taskList.add(t);
     }
 
+    public void addTask(PermaTask t) {
+        taskList.add(t);
+    }
+
     // REQUIRES: taskList is not null
     // EFFECTS: returns the list of all tasks in this planner.
     public ArrayList<NormalTask> getTasks() {
