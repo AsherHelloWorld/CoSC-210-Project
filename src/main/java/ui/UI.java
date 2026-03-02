@@ -5,6 +5,7 @@ import java.util.Scanner;
 import model.NormalTask;
 import model.Planner;
 import model.Task;
+import model.permaTask;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
@@ -36,6 +37,10 @@ public class UI {
                     viewTasks();
                     break;
                 case 3:
+                    p.clearTasks();
+                    System.out.println("All non-permanent tasks cleared from the planner.");
+                    break;
+                case 4:
                     //instantiate JsonWriter and save the planner to file
                     JsonWriter jsonWriter = new JsonWriter(JSON_STORE);
                     try {
@@ -47,7 +52,7 @@ public class UI {
                         System.out.println("An error occurred while saving the planner: " + e.getMessage());
                     }
                     break;
-                case 4:
+                case 5:
                     // load using JsonReader
                     JsonReader jsonReader = new JsonReader(JSON_STORE);
                     try {
@@ -57,7 +62,7 @@ public class UI {
                         System.out.println("An error occurred while loading the planner: " + e.getMessage());
                     }
                     break;
-                case 5:
+                case 6:
                     running = false;
                     break;
                 default:
@@ -71,9 +76,10 @@ public class UI {
         System.out.println();
         System.out.println("1. Add Task");
         System.out.println("2. View Tasks");
-        System.out.println("3. Save Planner");
-        System.out.println("4. Load Planner");
-        System.out.println("5. Exit");
+        System.out.println("3. Clear Non-Permanent Tasks");
+        System.out.println("4. Save Planner");
+        System.out.println("5. Load Planner");
+        System.out.println("6. Exit");
         System.out.print("Enter your choice: ");
     }
 
@@ -92,17 +98,26 @@ public class UI {
         String description = s.nextLine();
         System.out.print("Enter task location: ");
         String location = s.nextLine();
-
-        NormalTask newTask = new NormalTask(name, date, time, description, location);
-        p.addTask(newTask);
-        System.out.println("Task added successfully!");
+        System.out.print("Is this task permanent? (true/false): ");
+        boolean isPermanent = s.nextBoolean();
+        if(isPermanent) {
+            permaTask newTask = new permaTask(name, date, time, description, location);
+            p.addTask(newTask);
+            System.out.println("Permanent task added successfully!");
+        } else {
+            NormalTask newTask = new NormalTask(name, date, time, description, location);
+            p.addTask(newTask);
+            System.out.println("Task added successfully!");
+        }
     }
 
     // Prints out a list of all tasks in the planner
     private void viewTasks() {
         System.out.println();
-        System.out.println("Tasks in the planner:");
-        p.getTasks().forEach(NormalTask::display);
+        System.out.println("Weekly tasks:");
+        p.getTasks().forEach(task -> System.out.println(task.display()));
     }
+            
+        
 
 }

@@ -1,5 +1,6 @@
 package model;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.json.JSONArray;
@@ -52,6 +53,9 @@ public class Planner implements Searchable {
     // EFFECTS: clears all non-permanent tasks from the planner.
     public void clearTasks() {
         for (int i = taskList.size() - 1; i >= 0; i--) {
+            if (!(taskList.get(i) instanceof permaTask)) {
+                taskList.remove(i);
+            }
         }
     }
 
