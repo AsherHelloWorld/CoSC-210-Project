@@ -19,7 +19,7 @@ public class Planner implements Searchable {
             JSONObject obj = jsonArray.getJSONObject(i);
             boolean isPermanent = obj.optBoolean("permanent", false);
             if (isPermanent) {
-                taskList.add(new PermaTask(obj));
+                taskList.add(new PermTask(obj));
             } else {
                 taskList.add(new NormalTask(obj));
             }
@@ -60,7 +60,7 @@ public class Planner implements Searchable {
     // EFFECTS: clears all non-permanent tasks from the planner
     public void clearTasks() {
         for (int i = taskList.size() - 1; i >= 0; i--) {
-            if (!(taskList.get(i) instanceof PermaTask)) {
+            if (!(taskList.get(i) instanceof PermTask)) {
                 taskList.remove(i);
             }
         }
@@ -72,7 +72,7 @@ public class Planner implements Searchable {
         for (Task t : taskList) {
             JSONObject obj = t.toJson();
             // Add a flag for permanent tasks
-            if (t instanceof PermaTask) {
+            if (t instanceof PermTask) {
                 obj.put("permanent", true);
             } else {
                 obj.put("permanent", false);

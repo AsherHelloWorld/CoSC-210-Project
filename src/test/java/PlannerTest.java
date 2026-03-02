@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.NormalTask;
-import model.PermaTask;
+import model.PermTask;
 import model.Planner;
 import model.Task;
 import persistence.JsonReader;
@@ -42,7 +42,7 @@ public class PlannerTest {
     @Test
     void testAddTaskNormalAndPerma() {
         NormalTask n = new NormalTask("Normal", "Wed", 3, "Desc", "Loc");
-        PermaTask p = new PermaTask("Permanent", "Fri", 4, "Desc", "Office");
+        PermTask p = new PermTask("Permanent", "Fri", 4, "Desc", "Office");
 
         planner.addTask(n);
         planner.addTask(p);
@@ -64,21 +64,21 @@ public class PlannerTest {
         assertNotNull(planner.search("Tasker"));
         assertNull(planner.search("Missing"));
 
-        PermaTask p = new PermaTask("Important", "Monday", 1, "Desc", "Loc");
+        PermTask p = new PermTask("Important", "Monday", 1, "Desc", "Loc");
         planner.addTask(p);
         assertEquals(p.display(), planner.search("Important"));
     }
 
     @Test
     void testClearTasks() {
-        PermaTask p = new PermaTask("Permanent", "Fri", 4, "Desc", "Loc");
+        PermTask p = new PermTask("Permanent", "Fri", 4, "Desc", "Loc");
         planner.addTask(p);
 
         planner.clearTasks();
 
         List<Task> remaining = planner.getTasks();
         assertEquals(1, remaining.size());
-        assertTrue(remaining.get(0) instanceof PermaTask);
+        assertTrue(remaining.get(0) instanceof PermTask);
         assertEquals("Permanent", remaining.get(0).getName());
     }
 
@@ -91,15 +91,15 @@ public class PlannerTest {
     @Test
     void testClearTasksAllPermanent() {
         planner = new Planner();
-        PermaTask p1 = new PermaTask("Permanent 1", "Fri", 4, "Desc1", "Loc");
-        PermaTask p2 = new PermaTask("Permanent 2", "Sat", 5, "Desc2", "Loc");
+        PermTask p1 = new PermTask("Permanent 1", "Fri", 4, "Desc1", "Loc");
+        PermTask p2 = new PermTask("Permanent 2", "Sat", 5, "Desc2", "Loc");
         planner.addTask(p1);
         planner.addTask(p2);
 
         planner.clearTasks();
         List<Task> remaining = planner.getTasks();
         assertEquals(2, remaining.size());
-        assertTrue(remaining.stream().allMatch(t -> t instanceof PermaTask));
+        assertTrue(remaining.stream().allMatch(t -> t instanceof PermTask));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class PlannerTest {
         try {
             Planner p = new Planner();
             p.addTask(new NormalTask("Study", "Mon", 2, "Read 1", "Library"));
-            p.addTask(new PermaTask("Permanent Study", "Tue", 3, "Read 2", "Library"));
+            p.addTask(new PermTask("Permanent Study", "Tue", 3, "Read 2", "Library"));
 
             JsonWriter writer = new JsonWriter(TEST_FILE);
             writer.open();

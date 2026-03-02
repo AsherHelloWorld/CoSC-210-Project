@@ -5,15 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import model.PermaTask;
+import model.PermTask;
 
 public class PermaTaskTest {
 
-    private PermaTask perma;
+    private PermTask perma;
 
     @BeforeEach
     void setup() {
-        perma = new PermaTask("Important", "Monday", 2, "Permanent task", "Office");
+        perma = new PermTask("Important", "Monday", 2, "Permanent task", "Office");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class PermaTaskTest {
         obj.put("description", "JSON Desc");
         obj.put("location", "JSON Loc");
 
-        PermaTask p2 = new PermaTask(obj);
+        PermTask p2 = new PermTask(obj);
         assertEquals("JSON Task", p2.getName());
         assertEquals("Wed", p2.getDate());
         assertEquals(4, p2.getTime());

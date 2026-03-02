@@ -3,13 +3,13 @@ package model;
 import org.json.JSONObject;
 
 // Represents a permanent task that survives planner wipes
-public class PermaTask extends Task implements Displayable, Searchable {
+public class PermTask extends Task implements Displayable, Searchable {
 
     // REQUIRES: name, date, description, and location are not null;
     //           time is a positive integer (in hours)
     // MODIFIES: this
     // EFFECTS: constructs a permanent task with the given details
-    public PermaTask(String name, String date, int time,
+    public PermTask(String name, String date, int time,
                      String description, String location) {
         super(name, date, time, description, location);
     }
@@ -17,7 +17,7 @@ public class PermaTask extends Task implements Displayable, Searchable {
     // REQUIRES: json contains all required task fields
     // MODIFIES: this
     // EFFECTS: constructs a permanent task from JSON data
-    public PermaTask(JSONObject json) {
+    public PermTask(JSONObject json) {
         super(
             json.getString("name"),
             json.getString("date"),
@@ -29,7 +29,7 @@ public class PermaTask extends Task implements Displayable, Searchable {
 
     // MODIFIES: this
     // EFFECTS: constructs a default permanent task
-    public PermaTask() {
+    public PermTask() {
         super("Default Permanent Task", "Monday", 1,
               "No Description", "No Location");
     }
