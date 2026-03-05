@@ -1,16 +1,18 @@
 [
     {
-        "date": "test",
-        "name": "test",
-        "description": "test",
-        "location": "normal test",
-        "time": 67
+        "date": "Thursday",
+        "permanent": true,
+        "name": "Testing",
+        "description": "Testing GUi",
+        "location": "Charlies House",
+        "time": 7
     },
     {
-        "date": "test",
-        "name": "test",
-        "description": "test",
-        "location": "permanent",
-        "time": 41
+        "date": "Thursday",
+        "permanent": false,
+        "name": "Testing temp",
+        "description": "Testing temp",
+        "location": "Charlies attic",
+        "time": 67
     }
 ]
