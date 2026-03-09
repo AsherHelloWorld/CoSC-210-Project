@@ -26,11 +26,15 @@ public class PlannerTest {
 
     @BeforeEach
     void setUp() {
+        try {
         testTask = new NormalTask("Tasker", "Monday", 2, "Test task", "YMH");
         planner = new Planner();
         planner.addTask(testTask);
         planner.addTask(new NormalTask("Task 1", "Monday", 1, "Desc 1", "Loc 1"));
         planner.addTask(new NormalTask("Task 2", "Tuesday", 2, "Desc 2", "Loc 2"));
+        } catch (Exception e) {
+            fail("Unexpected exception during setup: " + e.getClass().getName());
+        }
     }
 
     @AfterEach
@@ -41,8 +45,9 @@ public class PlannerTest {
 
     @Test
     void testAddTaskNormalAndPerma() {
-        NormalTask n = new NormalTask("Normal", "Wed", 3, "Desc", "Loc");
-        PermTask p = new PermTask("Permanent", "Fri", 4, "Desc", "Office");
+        try {
+        NormalTask n = new NormalTask("Normal", "Wednesday", 3, "Desc", "Loc");
+        PermTask p = new PermTask("Permanent", "Friday", 4, "Desc", "Office");
 
         planner.addTask(n);
         planner.addTask(p);
@@ -50,6 +55,9 @@ public class PlannerTest {
         List<Task> tasks = planner.getTasks();
         assertTrue(tasks.contains(n));
         assertTrue(tasks.contains(p));
+        } catch (Exception e) {
+            fail("Unexpected exception during task creation: " + e.getClass().getName());
+        }
     }
 
     @Test
@@ -61,17 +69,22 @@ public class PlannerTest {
 
     @Test
     void testSearch() {
+        try {
         assertNotNull(planner.search("Tasker"));
         assertNull(planner.search("Missing"));
 
         PermTask p = new PermTask("Important", "Monday", 1, "Desc", "Loc");
         planner.addTask(p);
         assertEquals(p.display(), planner.search("Important"));
+        } catch (Exception e) {
+            fail("Unexpected exception during task creation: " + e.getClass().getName());
+        }
     }
 
     @Test
     void testClearTasks() {
-        PermTask p = new PermTask("Permanent", "Fri", 4, "Desc", "Loc");
+        try {
+        PermTask p = new PermTask("Permanent", "Friday", 4, "Desc", "Loc");
         planner.addTask(p);
 
         planner.clearTasks();
@@ -80,6 +93,9 @@ public class PlannerTest {
         assertEquals(1, remaining.size());
         assertTrue(remaining.get(0) instanceof PermTask);
         assertEquals("Permanent", remaining.get(0).getName());
+        } catch (Exception e) {
+            fail("Unexpected exception during task creation: " + e.getClass().getName());
+        }
     }
 
     @Test
@@ -91,8 +107,10 @@ public class PlannerTest {
     @Test
     void testClearTasksAllPermanent() {
         planner = new Planner();
-        PermTask p1 = new PermTask("Permanent 1", "Fri", 4, "Desc1", "Loc");
-        PermTask p2 = new PermTask("Permanent 2", "Sat", 5, "Desc2", "Loc");
+        try {
+        PermTask p1 = new PermTask("Permanent 1", "Friday", 4, "Desc1", "Loc");
+        PermTask p2 = new PermTask("Permanent 2", "Saturday", 5, "Desc2", "Loc");
+        
         planner.addTask(p1);
         planner.addTask(p2);
 
@@ -100,14 +118,17 @@ public class PlannerTest {
         List<Task> remaining = planner.getTasks();
         assertEquals(2, remaining.size());
         assertTrue(remaining.stream().allMatch(t -> t instanceof PermTask));
+        } catch (Exception e) {
+            fail("Unexpected exception during task creation: " + e.getClass().getName());
+        }
     }
 
     @Test
     void testJsonWriterAndReader() {
         try {
             Planner p = new Planner();
-            p.addTask(new NormalTask("Study", "Mon", 2, "Read 1", "Library"));
-            p.addTask(new PermTask("Permanent Study", "Tue", 3, "Read 2", "Library"));
+            p.addTask(new NormalTask("Study", "Monday", 2, "Read 1", "Library"));
+            p.addTask(new PermTask("Permanent Study", "Tuesday", 3, "Read 2", "Library"));
 
             JsonWriter writer = new JsonWriter(TEST_FILE);
             writer.open();
@@ -122,6 +143,8 @@ public class PlannerTest {
             assertTrue(loaded.getTasks().stream().anyMatch(t -> t.getName().equals("Permanent Study")));
         } catch (IOException e) {
             fail("IOException should not occur");
+        } catch (Exception e) {
+            fail("Unexpected exception type: " + e.getClass().getName());
         }
     }
 }

@@ -9,7 +9,7 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 
 public class PersistenceTest {
-    
+
     @Test
     void testReaderNonExistentFile() {
         JsonReader reader = new JsonReader("./data/noSuchFile.json");
@@ -18,10 +18,12 @@ public class PersistenceTest {
             fail("IOException expected");
         } catch (IOException e) {
             // expected
+        } catch (Exception e) {
+            fail("Unexpected exception type: " + e.getClass().getName());
         }
     }
-
-    @Test
+    
+    @Test 
     void testWriterInvalidFile() {
         try {
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
@@ -29,10 +31,12 @@ public class PersistenceTest {
             fail("IOException expected");
         } catch (IOException e) {
             // expected
+        } catch (Exception e) {
+            fail("Unexpected exception type: " + e.getClass().getName());
         }
     }
 
-   @Test
+    @Test
     void testPersistenceEmptyPlanner() {
         try {
             Planner p = new Planner();
@@ -47,6 +51,8 @@ public class PersistenceTest {
             assertEquals(0, loadedPlanner.getTasks().size());
         } catch (IOException e) {
             fail("Exception should not have been thrown");
+        } catch (Exception e) {
+            fail("Unexpected exception type: " + e.getClass().getName());
         }
     }
 }

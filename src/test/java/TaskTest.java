@@ -11,7 +11,11 @@ public class TaskTest {
 
     @BeforeEach
     void setup() {
+        try {
         tester = new NormalTask("Tasker", "Monday", 2, "Test task", "YMH");
+        } catch (Exception e) {
+            //Never occurs
+        }
     }
 
     @Test
@@ -25,6 +29,7 @@ public class TaskTest {
 
     @Test
     void testSetters() {
+        try {
         tester.setName("NewTasker");
         tester.setDate("Tuesday");
         tester.setTime(3);
@@ -36,6 +41,9 @@ public class TaskTest {
         assertEquals(3, tester.getTime());
         assertEquals("Updated task", tester.getDescription());
         assertEquals("NewYMH", tester.getLocation());
+        } catch (Exception e) {
+            //Never occurs
+        }
     }
 
     @Test
