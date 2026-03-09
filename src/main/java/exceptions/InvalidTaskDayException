@@ -1,0 +1,7 @@
+package exceptions;
+
+public class InvalidTaskDayException extends Exception {
+    public InvalidTaskDayException(String message) {
+        super(message);
+    }
+}
