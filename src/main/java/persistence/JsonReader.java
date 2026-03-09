@@ -2,6 +2,10 @@ package persistence;
 
 import model.Planner;
 import org.json.JSONArray;
+
+import exceptions.InvalidTaskDayException;
+import exceptions.InvalidTaskDurationException;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,7 +23,7 @@ public class JsonReader {
 
     // EFFECTS: reads planner from file and returns it;
     // throws IOException if an error occurs reading data from file
-    public Planner read() throws IOException {
+    public Planner read() throws IOException, InvalidTaskDayException, InvalidTaskDurationException {
         String jsonData = readFile(source);
         JSONArray jsonArray = new JSONArray(jsonData);
         return parsePlanner(jsonArray);
@@ -37,7 +41,7 @@ public class JsonReader {
     }
 
     // EFFECTS: parses planner from JSON array and returns it
-    private Planner parsePlanner(JSONArray jsonArray) {
+    private Planner parsePlanner(JSONArray jsonArray) throws InvalidTaskDayException, InvalidTaskDurationException {
         return new Planner(jsonArray);
     }
 }
