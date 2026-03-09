@@ -146,8 +146,9 @@ public class PlannerGUI extends JFrame {
         String date        = dateField.getText();
         String description = descriptionField.getText();
         String location    = locationField.getText();
-
         int time;
+
+        Task task;
         try {
             time = Integer.parseInt(timeField.getText());
         } catch (NumberFormatException e) {
@@ -156,7 +157,7 @@ public class PlannerGUI extends JFrame {
         }
 
         try {
-            Task task = permanentBox.isSelected()
+            task = permanentBox.isSelected()
                     ? new PermTask(name, date, time, description, location)
                     : new NormalTask(name, date, time, description, location);
             planner.addTask(task);
@@ -167,13 +168,6 @@ public class PlannerGUI extends JFrame {
         } catch (InvalidTaskDurationException e) {
             JOptionPane.showMessageDialog(this, "Invalid duration: " + e.getMessage());
         }
-    
-        planner.addTask(task);
-        planner.sortTasksByDay();
-
-        refreshList();
-    
-        clearInputFields();
     }
 
     private void clearInputFields() {
@@ -238,7 +232,7 @@ public class PlannerGUI extends JFrame {
     // MODIFIES: this
     // EFFECTS: updates the selected task with the current field values;
     //          shows an error dialog if the day or duration is invalid
-    private void updateSelectedTask() {
+    private void deleteSelectedTask() {
         int index = taskList.getSelectedIndex();
         if (index == -1) {
             JOptionPane.showMessageDialog(this, "Please select a task first.");
@@ -253,11 +247,10 @@ public class PlannerGUI extends JFrame {
 
     private void updateSelectedTask() {
 
-        int time;
-        try {
-            time = Integer.parseInt(timeField.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Time must be a whole number.");
+
+        int index = taskList.getSelectedIndex();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a task first.");
             return;
         }
 
@@ -266,7 +259,7 @@ public class PlannerGUI extends JFrame {
         try {
             task.setName(nameField.getText());
             task.setDate(dateField.getText());
-            task.setTime(time);
+            task.setTime(Integer.parseInt(timeField.getText()));
             task.setDescription(descriptionField.getText());
             task.setLocation(locationField.getText());
         } catch (InvalidTaskDayException e) {
