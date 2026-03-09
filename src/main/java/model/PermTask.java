@@ -35,15 +35,6 @@ public class PermTask extends Task implements Displayable, Searchable {
     }
 
     @Override
-    // EFFECTS: displays the details of this permanent task
-    // REQUIRES: this task has valid details (name, date, time, description, location)
-    public String display() {
-        return "Permanent Task: " + name + " on " + date
-                + " at " + time + ":00. Description: "
-                + description + ". Location: " + location;
-    }
-
-    @Override
     // EFFECTS: searches for a given keyword in the name of this task,
     //          and returns the task details if found; otherwise returns null
     // REQUIRES: keyword is not null
