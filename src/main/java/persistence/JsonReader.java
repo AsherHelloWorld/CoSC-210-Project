@@ -12,10 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-import org.json.JSONArray;
-
-import model.Planner;
-
 // Represents a reader that reads planner from JSON data stored in a file
 public class JsonReader {
     private String source;

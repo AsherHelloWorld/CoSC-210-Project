@@ -57,4 +57,34 @@ public class TaskTest {
 
         assertEquals(null, tester.search("Missing"));
     }
+
+    @Test
+    void testInvalidDate() {
+        try {
+            tester.setDate("Funday");
+        } catch (Exception e) {
+            assertEquals("InvalidTaskDayException", e.getClass().getSimpleName());
+            assertEquals("\"Funday\" is not a valid weekday. Must be one of: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday]", e.getMessage());
+        }
+    }
+
+    @Test 
+    void testInvalidTime() {
+        try {
+            tester.setTime(25);
+        } catch (Exception e) {
+            assertEquals("InvalidTaskDurationException", e.getClass().getSimpleName());
+            assertEquals("Task duration must be a positive integer, but got: 25", e.getMessage());
+        }
+    }
+
+    @Test 
+    void testInvalidTimeNegative() {
+        try {
+            tester.setTime(-5);
+        } catch (Exception e) {
+            assertEquals("InvalidTaskDurationException", e.getClass().getSimpleName());
+            assertEquals("Task duration must be a positive integer, but got: -5", e.getMessage());
+        }
+    }
 }
