@@ -296,8 +296,7 @@ public class PlannerGUI extends JFrame {
     }
 
     private void sortTasks() {
-
-        planner.sortTasksByDay();
+        planner.sortTasksByDayAndTime();
         refreshList();
     }
 }

@@ -86,20 +86,27 @@ public class Planner implements Searchable {
     }
 
     // EFFECTS: converts a day string to a number for sorting
-    public void sortTasksByDay() {
-        taskList.sort((t1, t2) -> dayToNumber(t1.getDate()) - dayToNumber(t2.getDate()));
+    public void sortTasksByDayAndTime() {
+        taskList.sort((t1, t2) -> {
+            int dayDiff = dayToNumber(t1.getDate()) - dayToNumber(t2.getDate());
+            if (dayDiff != 0) {
+                return dayDiff;
+            }
+            return t1.getTime() - t2.getTime();
+        });
     }
+
 
     private int dayToNumber(String day) {
         switch (day.toLowerCase()) {
-            case "Monday": return 1;
-            case "Tuesday": return 2;
-            case "Wednesday": return 3;
-            case "Thursday": return 4;
-            case "Friday": return 5;
-            case "Saturday": return 6;
-            case "Sunday": return 7;
-            default: return 8;
+            case "monday": return 1;
+            case "tuesday": return 2;
+            case "wednesday": return 3;
+            case "thursday": return 4;
+            case "friday": return 5;
+            case "saturday": return 6;
+            case "sunday": return 7;
+            default: return 0;
         }
     }
 }
