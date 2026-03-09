@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import exceptions.InvalidTaskDayException;
+import exceptions.InvalidTaskDurationException;
 import model.NormalTask;
 import model.PermTask;
 import model.Planner;
@@ -56,7 +58,6 @@ public class PlannerGUI extends JFrame {
     }
 
     private void initializeTaskList() {
-
         taskModel = new DefaultListModel<>();
         taskList = new JList<>(taskModel);
     
@@ -137,20 +138,34 @@ public class PlannerGUI extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    // MODIFIES: this
+    // EFFECTS: reads input fields and adds a new task to the planner;
+    //          shows an error dialog if the day or duration is invalid
     private void addTask() {
-
-        String name = nameField.getText();
-        String date = dateField.getText();
-        int time = Integer.parseInt(timeField.getText());
+        String name        = nameField.getText();
+        String date        = dateField.getText();
         String description = descriptionField.getText();
-        String location = locationField.getText();
-    
-        Task task;
-    
-        if (permanentBox.isSelected()) {
-            task = new PermTask(name, date, time, description, location);
-        } else {
-            task = new NormalTask(name, date, time, description, location);
+        String location    = locationField.getText();
+
+        int time;
+        try {
+            time = Integer.parseInt(timeField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Time must be a whole number.");
+            return;
+        }
+
+        try {
+            Task task = permanentBox.isSelected()
+                    ? new PermTask(name, date, time, description, location)
+                    : new NormalTask(name, date, time, description, location);
+            planner.addTask(task);
+            refreshList();
+            clearInputFields();
+        } catch (InvalidTaskDayException e) {
+            JOptionPane.showMessageDialog(this, "Invalid day: " + e.getMessage());
+        } catch (InvalidTaskDurationException e) {
+            JOptionPane.showMessageDialog(this, "Invalid duration: " + e.getMessage());
         }
     
         planner.addTask(task);
@@ -162,103 +177,71 @@ public class PlannerGUI extends JFrame {
     }
 
     private void clearInputFields() {
-
         nameField.setText("");
         dateField.setText("");
         timeField.setText("");
         descriptionField.setText("");
         locationField.setText("");
-    
         permanentBox.setSelected(false);
-    
-        // place cursor back in the first field
         nameField.requestFocusInWindow();
     }
 
     private void clearTasks() {
-
         planner.clearTasks();
         refreshList();
     }
 
     private void savePlanner() {
-
         try {
             JsonWriter writer = new JsonWriter(JSON_STORE);
             writer.open();
             writer.write(planner);
             writer.close();
-
             JOptionPane.showMessageDialog(this, "Planner saved!");
-
         } catch (Exception e) {
-
             JOptionPane.showMessageDialog(this, "Save failed.");
         }
     }
 
     private void loadPlanner() {
-
         try {
             JsonReader reader = new JsonReader(JSON_STORE);
             planner = reader.read();
-
             refreshList();
-
             JOptionPane.showMessageDialog(this, "Planner loaded!");
-
         } catch (Exception e) {
-
             JOptionPane.showMessageDialog(this, "Load failed.");
         }
     }
 
     private void refreshList() {
-
         taskModel.clear();
-
         for (Task t : planner.getTasks()) {
             taskModel.addElement(t.display());
         }
     }
 
-    private Task getSelectedTask() {
-
-        int index = taskList.getSelectedIndex();
-    
-        if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a task first.");
-            return null;
-        }
-    
-        return planner.getTasks().get(index);
-    }
-
     private void populateFieldsFromSelection() {
-
         int index = taskList.getSelectedIndex();
-    
         if (index == -1) {
             return;
         }
-    
         Task task = planner.getTasks().get(index);
-    
         nameField.setText(task.getName());
         dateField.setText(task.getDate());
         timeField.setText(String.valueOf(task.getTime()));
         descriptionField.setText(task.getDescription());
         locationField.setText(task.getLocation());
-    
         permanentBox.setSelected(task instanceof PermTask);
     }
 
-    private void deleteSelectedTask() {
-
+    // MODIFIES: this
+    // EFFECTS: updates the selected task with the current field values;
+    //          shows an error dialog if the day or duration is invalid
+    private void updateSelectedTask() {
         int index = taskList.getSelectedIndex();
-    
         if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Select a task first.");
+            JOptionPane.showMessageDialog(this, "Please select a task first.");
             return;
         }
     
@@ -270,35 +253,51 @@ public class PlannerGUI extends JFrame {
 
     private void updateSelectedTask() {
 
-        int index = taskList.getSelectedIndex();
-    
-        if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a task first.");
+        int time;
+        try {
+            time = Integer.parseInt(timeField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Time must be a whole number.");
             return;
         }
-    
+
         Task task = planner.getTasks().get(index);
-    
-        // Update basic fields
-        task.setName(nameField.getText());
-        task.setDate(dateField.getText());
-        task.setTime(Integer.parseInt(timeField.getText()));
-        task.setDescription(descriptionField.getText());
-        task.setLocation(locationField.getText());
-    
-        // Update permanence type if it changed
-        if (permanentBox.isSelected() && !(task instanceof PermTask)) {
-            planner.getTasks().set(index, new PermTask(
-                task.getName(), task.getDate(), task.getTime(),
-                task.getDescription(), task.getLocation()
-            ));
-        } else if (!permanentBox.isSelected() && (task instanceof PermTask)) {
-            planner.getTasks().set(index, new NormalTask(
-                task.getName(), task.getDate(), task.getTime(),
-                task.getDescription(), task.getLocation()
-            ));
+
+        try {
+            task.setName(nameField.getText());
+            task.setDate(dateField.getText());
+            task.setTime(time);
+            task.setDescription(descriptionField.getText());
+            task.setLocation(locationField.getText());
+        } catch (InvalidTaskDayException e) {
+            JOptionPane.showMessageDialog(this, "Invalid day: " + e.getMessage());
+            return;
+        } catch (InvalidTaskDurationException e) {
+            JOptionPane.showMessageDialog(this, "Invalid duration: " + e.getMessage());
+            return;
         }
-    
+
+        // Swap type if permanence changed
+        if (permanentBox.isSelected() && !(task instanceof PermTask)) {
+            try {
+                planner.getTasks().set(index, new PermTask(
+                        task.getName(), task.getDate(), task.getTime(),
+                        task.getDescription(), task.getLocation()));
+            } catch (InvalidTaskDayException | InvalidTaskDurationException e) {
+                JOptionPane.showMessageDialog(this, "Could not convert task: " + e.getMessage());
+                return;
+            }
+        } else if (!permanentBox.isSelected() && (task instanceof PermTask)) {
+            try {
+                planner.getTasks().set(index, new NormalTask(
+                        task.getName(), task.getDate(), task.getTime(),
+                        task.getDescription(), task.getLocation()));
+            } catch (InvalidTaskDayException | InvalidTaskDurationException e) {
+                JOptionPane.showMessageDialog(this, "Could not convert task: " + e.getMessage());
+                return;
+            }
+        }
+
         refreshList();
         clearInputFields();
     }

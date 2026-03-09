@@ -2,6 +2,8 @@ package ui;
 
 import java.util.Scanner;
 
+import exceptions.InvalidTaskDayException;
+import exceptions.InvalidTaskDurationException;
 import model.NormalTask;
 import model.PermTask;
 import model.Planner;
@@ -40,7 +42,6 @@ public class UI {
                     System.out.println("All non-permanent tasks cleared from the planner.");
                     break;
                 case 4:
-                    //instantiate JsonWriter and save the planner to file
                     JsonWriter jsonWriter = new JsonWriter(JSON_STORE);
                     try {
                         jsonWriter.open();
@@ -52,7 +53,6 @@ public class UI {
                     }
                     break;
                 case 5:
-                    // load using JsonReader
                     JsonReader jsonReader = new JsonReader(JSON_STORE);
                     try {
                         p = jsonReader.read();
@@ -82,31 +82,40 @@ public class UI {
         System.out.print("Enter your choice: ");
     }
 
-    // Prompts user for task details and adds the task to the planner
+    // MODIFIES: this
+    // EFFECTS: prompts user for task details and adds the task to the planner;
+    //          re-prompts if an invalid day or duration is entered
     private void addTask() {
         System.out.println();
         System.out.println("Adding a new task:");
         System.out.print("Enter task name: ");
         String name = s.nextLine();
-        System.out.print("Enter task date: ");
+        System.out.print("Enter task date (e.g. Monday): ");
         String date = s.nextLine();
-        System.out.print("Enter task time (in hours): ");
+        System.out.print("Enter task time (positive integer, in hours): ");
         int time = s.nextInt();
-        s.nextLine(); // consume newline
+        s.nextLine();
         System.out.print("Enter task description: ");
         String description = s.nextLine();
         System.out.print("Enter task location: ");
         String location = s.nextLine();
         System.out.print("Is this task permanent? (true/false): ");
         boolean isPermanent = s.nextBoolean();
-        if(isPermanent) {
-            PermTask newTask = new PermTask(name, date, time, description, location);
-            p.addTask(newTask);
-            System.out.println("Permanent task added successfully!");
-        } else {
-            NormalTask newTask = new NormalTask(name, date, time, description, location);
-            p.addTask(newTask);
-            System.out.println("Task added successfully!");
+
+        try {
+            if (isPermanent) {
+                p.addTask(new PermTask(name, date, time, description, location));
+                System.out.println("Permanent task added successfully!");
+            } else {
+                p.addTask(new NormalTask(name, date, time, description, location));
+                System.out.println("Task added successfully!");
+            }
+        } catch (InvalidTaskDayException e) {
+            System.out.println("Could not add task — invalid day: " + e.getMessage());
+        } catch (InvalidTaskDurationException e) {
+            System.out.println("Could not add task — invalid duration: " + e.getMessage());
+        } finally {
+            s.nextLine(); // Clear the input buffer
         }
     }
 
@@ -116,7 +125,4 @@ public class UI {
         System.out.println("Weekly tasks:");
         p.getTasks().forEach(task -> System.out.println(task.display()));
     }
-            
-        
-
 }

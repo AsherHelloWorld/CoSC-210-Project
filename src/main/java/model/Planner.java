@@ -6,6 +6,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import exceptions.InvalidTaskDayException;
+import exceptions.InvalidTaskDurationException;
+
 // Represents a weekly planner that contains a list of tasks.
 public class Planner implements Searchable {
 
@@ -14,7 +17,7 @@ public class Planner implements Searchable {
     // REQUIRES: jsonArray is not null
     // MODIFIES: this
     // EFFECTS: constructs a planner from a JSON array of tasks
-    public Planner(JSONArray jsonArray) {
+    public Planner(JSONArray jsonArray) throws InvalidTaskDayException, InvalidTaskDurationException {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             boolean isPermanent = obj.optBoolean("permanent", false);

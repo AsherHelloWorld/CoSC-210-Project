@@ -1,9 +1,18 @@
 package model;
 
+import java.util.Arrays;
+import java.util.List;
+
+import exceptions.InvalidTaskDayException;
+import exceptions.InvalidTaskDurationException;
 import org.json.JSONObject;
 
 // Represents a task with a name, date, time, description, and location.
 public abstract class Task {
+
+    protected static final List<String> VALID_DAYS = Arrays.asList( 
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+    );
 
     protected String name;
     protected String date;
@@ -11,13 +20,26 @@ public abstract class Task {
     protected String description;
     protected String location;
 
-    // REQUIRES: name, date, description, and location are not null;
-    //           time is a positive integer (in hours)
+    // REQUIRES: name, date, description, and location are not null
     // MODIFIES: this
-    // EFFECTS: constructs a task with the given name, date, time,
-    //          description, and location.
+    // EFFECTS: constructs a task with the given name, date, time, description, and location.
+    //          throws InvalidTaskDayException if date is not a valid weekday;
+    //          throws InvalidTaskDurationException if time is not a positive integer
     public Task(String name, String date, int time,
-                String description, String location) {
+                String description, String location)
+            throws InvalidTaskDayException, InvalidTaskDurationException {
+
+        if (!VALID_DAYS.contains(date)) {
+            throw new InvalidTaskDayException(
+                    "\"" + date + "\" is not a valid weekday. Must be one of: " + VALID_DAYS
+            );
+        }
+        if (time <= 0 || time > 24) {
+            throw new InvalidTaskDurationException(
+                    "Task duration must be a positive integer between 1 and 24, but got: " + time
+            );
+        }
+
         this.name = name;
         this.date = date;
         this.time = time;
@@ -44,10 +66,16 @@ public abstract class Task {
         return date;
     }
 
-    // REQUIRES: date is not null
+    // REQUIRES: date is a valid weekday string
     // MODIFIES: this
-    // EFFECTS: sets the date of this task to the given date.
-    public void setDate(String date) {
+    // EFFECTS: sets the date of this task to the given date;
+    //          throws InvalidTaskDayException if date is not a valid weekday
+    public void setDate(String date) throws InvalidTaskDayException {
+        if (!VALID_DAYS.contains(date)) {
+            throw new InvalidTaskDayException(
+                    "\"" + date + "\" is not a valid weekday. Must be one of: " + VALID_DAYS
+            );
+        }
         this.date = date;
     }
 
@@ -58,8 +86,14 @@ public abstract class Task {
 
     // REQUIRES: time is a positive integer (in hours)
     // MODIFIES: this
-    // EFFECTS: sets the time of this task to the given time.
-    public void setTime(int time) {
+    // EFFECTS: sets the time of this task to the given time;
+    //          throws InvalidTaskDurationException if time is not positive
+    public void setTime(int time) throws InvalidTaskDurationException {
+        if (time <= 0) {
+            throw new InvalidTaskDurationException(
+                    "Task duration must be a positive integer, but got: " + time
+            );
+        }
         this.time = time;
     }
 
