@@ -8,7 +8,7 @@ import model.Planner;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
-public class Persistence {
+public class PersistenceTest {
     
     @Test
     void testReaderNonExistentFile() {
