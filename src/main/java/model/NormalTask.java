@@ -40,15 +40,6 @@ public class NormalTask extends Task implements Displayable, Searchable {
     }
 
     @Override
-    // EFFECTS: displays the details of this task.
-    public String display() {
-        return "Normal Task: " + name + " on " + date
-                + " at " + time + ":00. Description: "
-                + description + ". Location: " + location;
-    }
-
-    @Override
-    // REQUIRES: keyword is not null
     // EFFECTS: searches for a given keyword in the name of this task,
     //          and returns the task details if found; otherwise returns null.
     public String search(String keyword) {
