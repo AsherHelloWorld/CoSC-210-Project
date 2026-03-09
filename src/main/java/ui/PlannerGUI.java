@@ -47,10 +47,10 @@ public class PlannerGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        initializeTaskList();
+        initializeTaskList();      // LEFT SIDE
+        initializeEditorPanel();   // MIDDLE
+        initializePersistenceBar(); // BOTTOM
         taskList.addListSelectionListener(e -> populateFieldsFromSelection());
-        initializeInputPanel();
-        initializeButtons();
 
         setVisible(true);
     }
@@ -59,70 +59,82 @@ public class PlannerGUI extends JFrame {
 
         taskModel = new DefaultListModel<>();
         taskList = new JList<>(taskModel);
-
+    
         JScrollPane scrollPane = new JScrollPane(taskList);
-
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setPreferredSize(new java.awt.Dimension(250, 0));
+    
+        JPanel leftPanel = new JPanel(new BorderLayout());
+    
+        leftPanel.add(new JLabel("Tasks"), BorderLayout.NORTH);
+        leftPanel.add(scrollPane, BorderLayout.CENTER);
+    
+        add(leftPanel, BorderLayout.WEST);
     }
 
-    private void initializeInputPanel() {
+    private void initializeEditorPanel() {
 
-        JPanel panel = new JPanel(new GridLayout(6,2));
-
+        JPanel editor = new JPanel(new GridLayout(8,2,10,10));
+    
         nameField = new JTextField();
         dateField = new JTextField();
         timeField = new JTextField();
         descriptionField = new JTextField();
         locationField = new JTextField();
-
         permanentBox = new JCheckBox();
-
-        panel.add(new JLabel("Name"));
-        panel.add(nameField);
-
-        panel.add(new JLabel("Date"));
-        panel.add(dateField);
-
-        panel.add(new JLabel("Time"));
-        panel.add(timeField);
-
-        panel.add(new JLabel("Description"));
-        panel.add(descriptionField);
-
-        panel.add(new JLabel("Location"));
-        panel.add(locationField);
-
-        panel.add(new JLabel("Permanent"));
-        panel.add(permanentBox);
-
-        add(panel, BorderLayout.NORTH);
+    
+        editor.add(new JLabel("Name"));
+        editor.add(nameField);
+    
+        editor.add(new JLabel("Day"));
+        editor.add(dateField);
+    
+        editor.add(new JLabel("Time"));
+        editor.add(timeField);
+    
+        editor.add(new JLabel("Description"));
+        editor.add(descriptionField);
+    
+        editor.add(new JLabel("Location"));
+        editor.add(locationField);
+    
+        editor.add(new JLabel("Permanent"));
+        editor.add(permanentBox);
+    
+        JButton addButton = new JButton("Add Task");
+        JButton updateButton = new JButton("Update Task");
+        JButton deleteButton = new JButton("Delete Task");
+        JButton sortButton = new JButton("Sort");
+    
+        addButton.addActionListener(e -> addTask());
+        updateButton.addActionListener(e -> updateSelectedTask());
+        deleteButton.addActionListener(e -> deleteSelectedTask());
+        sortButton.addActionListener(e -> sortTasks());
+    
+        editor.add(addButton);
+        editor.add(updateButton);
+        editor.add(deleteButton);
+        editor.add(sortButton);
+    
+        add(editor, BorderLayout.CENTER);
     }
 
-    private void initializeButtons() {
+    private void initializePersistenceBar() {
 
-        JPanel panel = new JPanel();
-
-        JButton addButton = new JButton("Add Task");
-        JButton clearButton = new JButton("Clear Non-Permanent");
+        JPanel bottomPanel = new JPanel();
+    
         JButton saveButton = new JButton("Save");
         JButton loadButton = new JButton("Load");
-        JButton updateButton = new JButton("Update Task");
- 
-
-
-        addButton.addActionListener(e -> addTask());
-        clearButton.addActionListener(e -> clearTasks());
+        JButton clearButton = new JButton("Clear Non-Permanent");
+    
         saveButton.addActionListener(e -> savePlanner());
         loadButton.addActionListener(e -> loadPlanner());
-        updateButton.addActionListener(e -> updateSelectedTask());
-
-        panel.add(addButton);
-        panel.add(clearButton);
-        panel.add(saveButton);
-        panel.add(loadButton);
-        panel.add(updateButton);
-
-        add(panel, BorderLayout.SOUTH);
+        clearButton.addActionListener(e -> clearTasks());
+    
+        bottomPanel.add(saveButton);
+        bottomPanel.add(loadButton);
+        bottomPanel.add(clearButton);
+    
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     private void addTask() {
@@ -142,7 +154,8 @@ public class PlannerGUI extends JFrame {
         }
     
         planner.addTask(task);
-    
+        planner.sortTasksByDay();
+
         refreshList();
     
         clearInputFields();
@@ -252,6 +265,7 @@ public class PlannerGUI extends JFrame {
         planner.getTasks().remove(index);
     
         refreshList();
+        clearInputFields();
     }
 
     private void updateSelectedTask() {
@@ -287,5 +301,11 @@ public class PlannerGUI extends JFrame {
     
         refreshList();
         clearInputFields();
+    }
+
+    private void sortTasks() {
+
+        planner.sortTasksByDay();
+        refreshList();
     }
 }

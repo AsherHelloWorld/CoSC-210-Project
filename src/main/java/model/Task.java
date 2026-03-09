@@ -99,7 +99,15 @@ public abstract class Task {
     }
 
     // EFFECTS: displays the details of this task.
-    public abstract String display();
+    public String display() {
+
+        String day = date.substring(0,3).toUpperCase();
+        String formattedTime = String.format("%02d:00", time);
+    
+        String marker = (this instanceof PermTask) ? "★ " : "    ";
+    
+        return marker + day + " " + formattedTime + " | " + name;
+    }
 
     // MODIFIES: this
     // EFFECTS: searches for a given keyword in the name of this task, and

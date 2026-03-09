@@ -1,9 +1,10 @@
 package persistence;
-import model.Planner;
-import org.json.JSONArray;
-
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+
+import org.json.JSONArray;
+
+import model.Planner;
 
 
 // Represents a writer that writes JSON representation of planner to file.
