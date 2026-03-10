@@ -147,4 +147,26 @@ public class PlannerTest {
             fail("Unexpected exception type: " + e.getClass().getName());
         }
     }
+
+    @Test
+    void testJsonWriterInvalidFile() {
+        try {
+            JsonWriter writer = new JsonWriter("/invalid_path/test.json");
+            writer.open();
+            fail("Expected IOException was not thrown");
+        } catch (IOException e) {
+            // Expected exception
+        }
+    }
+
+    @Test 
+    void testJsonReaderNonExistentFile() {
+        try {
+            JsonReader reader = new JsonReader("non_existent_file.json");
+            reader.read();
+            fail("Expected IOException was not thrown");
+        } catch (Exception e) {
+            // Expected exception
+        }
+    }
 }
