@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import exceptions.InvalidTaskDayException;
 import exceptions.InvalidTaskDurationException;
+import model.Event;
+import model.EventLog;
 import model.NormalTask;
 import model.PermTask;
 import model.Planner;
@@ -63,6 +65,7 @@ public class UI {
                     break;
                 case 6:
                     running = false;
+                    printEventLog();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -124,5 +127,14 @@ public class UI {
         System.out.println();
         System.out.println("Weekly tasks:");
         p.getTasks().forEach(task -> System.out.println(task.display()));
+    }
+
+    // EFFECTS: prints all logged events to the console
+    private void printEventLog() {
+        System.out.println("\n=== Event Log ===");
+        for (Event event : EventLog.getInstance()) {
+            System.out.println(event.toString());
+            System.out.println();
+        }
     }
 }

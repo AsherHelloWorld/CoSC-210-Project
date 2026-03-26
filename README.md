@@ -23,3 +23,29 @@ This application will allow users to keep track of what we need to do that week,
 * As a user, I want to add a location to events so I can know where it is. 
 * As a user, I want to be able to view all the events I have in a given day so that I can be ready for the day. 
 
+## Phase 4: Task 2
+
+Representative sample of events logged during a typical session (printed to console on application quit):
+```
+=== Event Log ===
+Mon Mar 23 17:45:01 PDT 2026
+task added to planner: COSC 210 Lecture [Monday at 10h]
+
+Mon Mar 23 17:45:14 PDT 2026
+permanent task added to planner: Weekly Team Meeting [Wednesday at 14h]
+
+Mon Mar 23 17:45:28 PDT 2026
+task added to planner: Gym Session [Tuesday at 8h]
+
+Mon Mar 23 17:45:35 PDT 2026
+task added to planner: Study Session [Thursday at 3h]
+
+Mon Mar 23 17:45:42 PDT 2026
+planner tasks sorted by day and time
+
+Mon Mar 23 17:45:50 PDT 2026
+task removed from planner: Gym Session [Tuesday at 8h]
+
+Mon Mar 23 17:45:58 PDT 2026
+planner cleared: 2 non-permanent task(s) removed
+```

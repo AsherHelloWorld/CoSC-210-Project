@@ -1,11 +1,18 @@
 package ui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.RenderingHints;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -13,9 +20,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 
 import exceptions.InvalidTaskDayException;
 import exceptions.InvalidTaskDurationException;
+import model.Event;
+import model.EventLog;
 import model.NormalTask;
 import model.PermTask;
 import model.Planner;
@@ -46,7 +56,16 @@ public class PlannerGUI extends JFrame {
 
         setTitle("Weekly Planner");
         setSize(600, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                printEventLog();
+                dispose();
+                System.exit(0);
+            }
+        });
+
         setLayout(new BorderLayout());
 
         initializeTaskList();      // LEFT SIDE
@@ -163,6 +182,7 @@ public class PlannerGUI extends JFrame {
             planner.addTask(task);
             refreshList();
             clearInputFields();
+            showTaskAddedPopup(task.getName());
         } catch (InvalidTaskDayException e) {
             JOptionPane.showMessageDialog(this, "Invalid day: " + e.getMessage());
         } catch (InvalidTaskDurationException e) {
@@ -239,7 +259,7 @@ public class PlannerGUI extends JFrame {
             return;
         }
     
-        planner.getTasks().remove(index);
+        planner.removeTask(index);
     
         refreshList();
         clearInputFields();
@@ -298,5 +318,62 @@ public class PlannerGUI extends JFrame {
     private void sortTasks() {
         planner.sortTasksByDayAndTime();
         refreshList();
+    }
+
+    // EFFECTS: shows a brief popup dialog with a checkmark graphic when a task is added
+    private void showTaskAddedPopup(String taskName) {
+        JDialog dialog = new JDialog(this, false); // false = non-blocking
+        dialog.setUndecorated(true);
+        dialog.setSize(200, 120);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout(10, 10));
+
+        CheckmarkPanel checkmark = new CheckmarkPanel();
+        JLabel label = new JLabel("\"" + taskName + "\" added!", JLabel.CENTER);
+
+        dialog.add(checkmark, BorderLayout.WEST);
+        dialog.add(label, BorderLayout.CENTER);
+        dialog.setVisible(true);
+
+        // Close the dialog after 1.5 seconds
+        Timer timer = new Timer(1500, e -> dialog.dispose());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    // EFFECTS: prints all logged events to the console
+    private void printEventLog() {
+        System.out.println("\n=== Event Log ===");
+        for (Event event : EventLog.getInstance()) {
+            System.out.println(event.toString());
+            System.out.println();
+        }
+    }
+
+    // Represents a panel that draws a checkmark graphic.
+    private static class CheckmarkPanel extends JPanel {
+        private static final int SIZE = 80;
+
+        public CheckmarkPanel() {
+            setPreferredSize(new java.awt.Dimension(SIZE, SIZE));
+            setBackground(new java.awt.Color(240, 255, 240));
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            // Draw green circle background
+            g2.setColor(new java.awt.Color(60, 179, 113));
+            g2.fillOval(10, 10, 60, 60);
+
+            // Draw white checkmark
+            g2.setColor(java.awt.Color.WHITE);
+            g2.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2.drawLine(22, 40, 35, 53);
+            g2.drawLine(35, 53, 58, 27);
+        }
     }
 }
