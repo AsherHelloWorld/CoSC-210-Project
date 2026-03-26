@@ -36,9 +36,13 @@ public class Planner implements Searchable {
 
     // REQUIRES: t is not null
     // MODIFIES: this
-    // EFFECTS: adds the given task to this planner
+    // EFFECTS: adds the given task to this planner and logs the event
     public void addTask(Task t) {
         taskList.add(t);
+        String type = (t instanceof PermTask) ? "permanent task" : "task";
+        EventLog.getInstance().logEvent(
+                new Event(type + " added to planner: " + t.getName()
+                        + " [" + t.getDate() + " at " + t.getTime() + "h]"));
     }
 
     // EFFECTS: returns the list of all tasks in this planner
@@ -60,13 +64,17 @@ public class Planner implements Searchable {
     }
 
     // MODIFIES: this
-    // EFFECTS: clears all non-permanent tasks from the planner
+    // EFFECTS: clears all non-permanent tasks from the planner and logs the event
     public void clearTasks() {
+        int removedCount = 0;
         for (int i = taskList.size() - 1; i >= 0; i--) {
             if (!(taskList.get(i) instanceof PermTask)) {
                 taskList.remove(i);
+                removedCount++;
             }
         }
+        EventLog.getInstance().logEvent(
+                new Event("planner cleared: " + removedCount + " non-permanent task(s) removed"));
     }
 
     // EFFECTS: returns a JSON array representation of the tasks in this planner
@@ -94,6 +102,7 @@ public class Planner implements Searchable {
             }
             return t1.getTime() - t2.getTime();
         });
+        EventLog.getInstance().logEvent(new Event("planner tasks sorted by day and time"));
     }
 
 
@@ -108,5 +117,16 @@ public class Planner implements Searchable {
             case "sunday": return 7;
             default: return 0;
         }
+    }
+
+    // REQUIRES: 0 <= index < taskList.size()
+    // MODIFIES: this
+    // EFFECTS: removes the task at the given index and logs the event
+    public void removeTask(int index) {
+        Task t = taskList.get(index);
+        taskList.remove(index);
+        EventLog.getInstance().logEvent(
+                new Event("task removed from planner: " + t.getName()
+                        + " [" + t.getDate() + " at " + t.getTime() + "h]"));
     }
 }
