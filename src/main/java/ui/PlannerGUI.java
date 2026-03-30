@@ -126,7 +126,7 @@ public class PlannerGUI extends JFrame {
         JButton sortButton = new JButton("Sort");
     
         addButton.addActionListener(e -> addTask());
-        updateButton.addActionListener(e -> updateSelectedTask());
+        updateButton.addActionListener(e -> updateTask());
         deleteButton.addActionListener(e -> deleteSelectedTask());
         sortButton.addActionListener(e -> sortTasks());
     
@@ -265,54 +265,37 @@ public class PlannerGUI extends JFrame {
         clearInputFields();
     }
 
-    private void updateSelectedTask() {
-
-
+    private void updateTask() {
         int index = taskList.getSelectedIndex();
         if (index == -1) {
             JOptionPane.showMessageDialog(this, "Please select a task first.");
             return;
         }
-
+    
         Task task = planner.getTasks().get(index);
-
+    
+        String name = nameField.getText();
+        String date = dateField.getText();
+        String description = descriptionField.getText();
+        String location = locationField.getText();
+        int time;
+    
         try {
-            task.setName(nameField.getText());
-            task.setDate(dateField.getText());
-            task.setTime(Integer.parseInt(timeField.getText()));
-            task.setDescription(descriptionField.getText());
-            task.setLocation(locationField.getText());
+            time = Integer.parseInt(timeField.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Time must be a whole number.");
+            return;
+        }
+    
+        try {
+            planner.updateTask(task, index, name, date, time, description, location);
+            refreshList();
+            showTaskAddedPopup(task.getName() + " updated!");
         } catch (InvalidTaskDayException e) {
             JOptionPane.showMessageDialog(this, "Invalid day: " + e.getMessage());
-            return;
         } catch (InvalidTaskDurationException e) {
             JOptionPane.showMessageDialog(this, "Invalid duration: " + e.getMessage());
-            return;
         }
-
-        // Swap type if permanence changed
-        if (permanentBox.isSelected() && !(task instanceof PermTask)) {
-            try {
-                planner.getTasks().set(index, new PermTask(
-                        task.getName(), task.getDate(), task.getTime(),
-                        task.getDescription(), task.getLocation()));
-            } catch (InvalidTaskDayException | InvalidTaskDurationException e) {
-                JOptionPane.showMessageDialog(this, "Could not convert task: " + e.getMessage());
-                return;
-            }
-        } else if (!permanentBox.isSelected() && (task instanceof PermTask)) {
-            try {
-                planner.getTasks().set(index, new NormalTask(
-                        task.getName(), task.getDate(), task.getTime(),
-                        task.getDescription(), task.getLocation()));
-            } catch (InvalidTaskDayException | InvalidTaskDurationException e) {
-                JOptionPane.showMessageDialog(this, "Could not convert task: " + e.getMessage());
-                return;
-            }
-        }
-
-        refreshList();
-        clearInputFields();
     }
 
     private void sortTasks() {

@@ -136,4 +136,17 @@ public class Planner implements Searchable {
 
         taskList.remove(index);
     }
+
+    public void updateTask(Task t, int index, String newName, String newDate, 
+                        int newTime, String newDescription, String newLocation)
+        throws InvalidTaskDayException, InvalidTaskDurationException {
+
+    String type = (t instanceof PermTask) ? "Permanent Task" : "Task";
+    EventLog.getInstance().logEvent(new Event(
+            type + " updated: " + t.getName() + " → " + newName
+            + " [" + t.getDate() + " → " + newDate
+            + " at " + t.getTime() + "h → " + newTime + "h]"));
+
+    taskList.get(index).update(newName, newDate, newTime, newDescription, newLocation);
+}
 }

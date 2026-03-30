@@ -144,7 +144,13 @@ public abstract class Task {
     }
 
     // MODIFIES: this
-    // EFFECTS: searches for a given keyword in the name of this task, and
-    //          returns the task details if found; otherwise returns null
-    // REQUIRES: keyword is not null
+    // EFFECTS: updates the details of this task with the given name, date, time, description, and location;
+    public void update(String name, String date, int time, String description, String location)
+            throws InvalidTaskDayException, InvalidTaskDurationException {
+        setName(name);
+        setDate(date);
+        setTime(time);
+        setDescription(description);
+        setLocation(location);
+    }
 }
