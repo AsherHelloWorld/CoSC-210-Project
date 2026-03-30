@@ -39,10 +39,11 @@ public class Planner implements Searchable {
     // EFFECTS: adds the given task to this planner and logs the event
     public void addTask(Task t) {
         taskList.add(t);
-        String type = (t instanceof PermTask) ? "permanent task" : "task";
+        String type = (t instanceof PermTask) ? "Permanent task" : "Task";
         EventLog.getInstance().logEvent(
                 new Event(type + " added to planner: " + t.getName()
-                        + " [" + t.getDate() + " at " + t.getTime() + "h]"));
+                        + " [" + t.getDate() + " at " + t.getTime() + "h]"
+                            + "\nDescription: " + t.getDescription() + "\nLocation: " + t.getLocation()));
     }
 
     // EFFECTS: returns the list of all tasks in this planner
@@ -74,7 +75,7 @@ public class Planner implements Searchable {
             }
         }
         EventLog.getInstance().logEvent(
-                new Event("planner cleared: " + removedCount + " non-permanent task(s) removed"));
+                new Event("Planner cleared: " + removedCount + " non-permanent task(s) removed"));
     }
 
     // EFFECTS: returns a JSON array representation of the tasks in this planner
@@ -102,7 +103,7 @@ public class Planner implements Searchable {
             }
             return t1.getTime() - t2.getTime();
         });
-        EventLog.getInstance().logEvent(new Event("planner tasks sorted by day and time"));
+        EventLog.getInstance().logEvent(new Event("Planner tasks sorted by day and time"));
     }
 
 
@@ -123,10 +124,16 @@ public class Planner implements Searchable {
     // MODIFIES: this
     // EFFECTS: removes the task at the given index and logs the event
     public void removeTask(int index) {
-        Task t = taskList.get(index);
-        taskList.remove(index);
+
+         Task t = taskList.get(index);
+
+        // Log the deletion event
+        String type = (t instanceof PermTask) ? "Permanent Task" : "Task";
         EventLog.getInstance().logEvent(
-                new Event("task removed from planner: " + t.getName()
-                        + " [" + t.getDate() + " at " + t.getTime() + "h]"));
+                new Event(type + " removed from planner: " + t.getName()
+                        + " [" + t.getDate() + " at " + t.getTime() + "h]"
+                            + "\nDescription: " + t.getDescription() + "\nLocation: " + t.getLocation()));
+
+        taskList.remove(index);
     }
 }
